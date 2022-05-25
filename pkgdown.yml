@@ -2,7 +2,7 @@ pandoc: 2.7.3
 pkgdown: 2.0.3
 pkgdown_sha: ~
 articles: {}
-last_built: 2022-05-25T18:36Z
+last_built: 2022-05-25T21:24Z
 urls:
   reference: https://jesse-smith.github.io/futuremice/reference
   article: https://jesse-smith.github.io/futuremice/articles
