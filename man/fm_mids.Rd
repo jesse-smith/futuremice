@@ -10,7 +10,7 @@ fm_mids(mids, p, mice_args)
 \item{mids}{An object of class \code{mids}, typically produced by a previous call
 to \code{fm_mice()}}
 
-\item{p}{\verb{[progressor]} A progress bar object from \code{{progressr}}}
+\item{p}{A progress bar object from \code{{progressr}}}
 
 \item{maxit}{The number of additional Gibbs sampling iterations}
 }

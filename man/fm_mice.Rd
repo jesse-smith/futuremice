@@ -10,7 +10,7 @@ fm_mice(.m, p, mice_args)
 \item{.m}{Sink for using \code{{purrr}}-style \code{map()} functions for iteration.
 Unused.}
 
-\item{p}{\verb{[progressor]} A progress bar object from \code{{progressr}}}
+\item{p}{A progress bar object from \code{{progressr}}}
 
 \item{...}{Arguments passed on to \code{mice::mice}. \code{seed} is ignored.}
 }
