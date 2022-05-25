@@ -1,10 +1,11 @@
 Package: futuremice
-Title: What the Package Does (One Line, Title Case)
+Title: A Future for MICE
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    person("Jesse", "Smith", , "jesse.smith@stjude.org", role = c("aut", "cre"))
+Description: futuremice provides parallelized variants of `mice::mice()` and
+    `mice::mice.mids()` which support progress updates and early stopping on
+    convergence.
 License: MIT + file LICENSE
 Suggests: 
     covr,
