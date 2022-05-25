@@ -158,7 +158,7 @@ future_mice <- function(
   }
 
   # Show ending message
-  future_mice_complete(i, rhat_lt, rhat_it, rhat_msg)
+  fm_done_msg(i, rhat_lt, rhat_it, rhat_msg)
 
   # Update call and ignore
   mids$call <- mids_call
@@ -211,7 +211,7 @@ fm_mice_args <- function(f_m, ..., .args = rlang::fn_fmls_syms()) {
 #' @param .m Sink for using `{purrr}`-style `map()` functions for iteration.
 #'   Unused.
 #' @inheritParams future_mice
-#' @param p `[progressor]` A progress bar object from `{progressr}`
+#' @param p A progress bar object from `{progressr}`
 #' @param ... Arguments passed on to `mice::mice`. `seed` is ignored.
 #'
 #' @return A `mids` object (*m*ultiply *i*mputed *d*ata *s*et)
@@ -220,7 +220,7 @@ fm_mice_args <- function(f_m, ..., .args = rlang::fn_fmls_syms()) {
 fm_mice <- function(.m, p, mice_args) {
   # Handle seed
   RNGkind("L'Ecuyer-CMRG")
-  seed <- sample.int(.Machine$integer.max, size = 1L)
+  mice_args$seed <- sample.int(.Machine$integer.max, size = 1L)
   mids <- do.call(mice::mice, mice_args)
   p()
   mids
@@ -271,38 +271,4 @@ fm_done_msg <- function(i, rhat_lt, rhat_it, rhat_msg) {
     rlang::warn("Sampling did not converge", use_cli_format = TRUE)
     rlang::inform(rhat_msg, use_cli_format = TRUE)
   }
-}
-
-
-#' Quick Max R-hat Calculation
-#'
-#' Calculates the largest R-hat statistic across all variables and chain
-#' statistics for the most recent iteration
-#'
-#' @param data An object of class `mids` as created by `mice::mice()`
-#'
-#' @return A legnth 1 double containing the maximum R-hat statistic
-#'
-#' @keywords internal
-rhat_max <- function(data) {
-  # Input checks
-  if (!mice::is.mids(data)) rlang::abort("`data` not of class 'mids'")
-  if (is.null(data$chainMean)) rlang::abort("No convergence diagnostics found")
-  # Variables
-  vrbs <- colnames(data$where)[colSums(data$where) > 0L]
-  n <- length(vrbs)
-  # Reshape chain data
-  chain_mean <- aperm(data$chainMean[vrbs, , , drop = FALSE], c(2L, 3L, 1L))
-  chain_var  <- aperm(data$chainVar[vrbs, , , drop = FALSE], c(2L, 3L, 1L))
-  # Extract chains for each variable and parameter
-  seq_n <- seq_len(n)
-  param_mean <- purrr::map(seq_n, ~ chain_mean[, , x])
-  param_var  <- purrr::map(seq_n, ~ chain_var[, , x])
-  # Calculate R-hat for each variable and parameter, then get max
-  rhat_max_ <- suppressWarnings(max(
-    purrr::map_dbl(c(param_mean, param_var), rstan::Rhat),
-    na.rm = TRUE
-  ))
-  # Return, replacing infinite value w/ NA
-  if (is.infinite(rhat_max_)) NA_real_ else rhat_max_
 }
