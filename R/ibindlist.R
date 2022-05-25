@@ -1,0 +1,60 @@
+#' Combine a List of \code{\link[mice]{mids}} Objects
+#'
+#' Combines a list of \code{\link[mice]{mids}} objects into a single `mids`
+#' object. The resulting number of imputed data sets is equal to the sum of the
+#' number of imputed data sets in each list element.
+#'
+#' The `call` and `seed` arguments are primarily used by
+#' \code{\link[future_mice]{future_mice()}} and
+#' \code{\link[future_mids]{future_mids()}}; they allow modification of the
+#' `mids` object to match the equivalent \code{\link[mice:mice]{mice::mice()}}
+#' output exactly.
+#'
+#' @param mids_list List of `mids` objects to combine
+#' @param call An optional call to use for the `call` attribute of the resulting
+#'   `mids` object. The default uses the call in `mids_list[[1]]$call`.
+#' @param seed An optional integer to set as the `seed` attribute of the
+#'   resulting `mids` object.
+#'
+#' @return A combined `mids` object
+#'
+#' @export
+ibindlist <- function(mids_list, call = NULL, seed = NULL) {
+  # Combine into single `mids` object
+  mids <- purrr::reduce(mids_list, mice::ibind)
+  # Set `ignore` attribute
+  mids$ignore <- mids_list[[1L]]$ignore
+  # Set `call` attribute
+  if (is.null(call)) {
+    call <- mids_list[[1L]]$call
+  } else if (!rlang::is_call(call)) {
+    rlang::abort("`call` must be a call object or `NULL`")
+  }
+  mids$call <- call
+  # Set seed attribute
+  if (!is.null(seed)) {
+    if (!(rlang::is_scalar_integerish(seed) || is.na(seed))) {
+      rlang::abort("`seed` must be a scalar integer, `NA`, or `NULL`")
+    }
+    mids$seed <- seed
+  }
+  # Set names of imputation data frames
+  nms <- as.character(seq_len(mids$m))
+  mids$imp <- purrr::map(mids$imp, fm_set_colnames, names = nms)
+  # Return
+  mids
+}
+
+
+#' Helper Function for Setting Column Names
+#'
+#' @param x An object to set column names for. Must have at least 2 dimensions.
+#' @param names A character vector of column names
+#'
+#' @return `x`, with (re-)named columns
+#'
+#' @keywords internal
+fm_set_colnames <- function(x, names) {
+  colnames(x) <- names
+  x
+}
