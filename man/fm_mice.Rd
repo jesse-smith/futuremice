@@ -4,13 +4,13 @@
 \alias{fm_mice}
 \title{\code{{furrr}}-Friendly \code{mice::mice()} w/ Progress Updates}
 \usage{
-fm_mice(.m, p, mice_args)
+fm_mice(.m, mice_args, progressor)
 }
 \arguments{
-\item{.m}{Sink for using \code{{purrr}}-style \code{map()} functions for iteration.
+\item{.m}{Sink that allows iteration w/ \code{{purrr}}-style \code{map()} functions.
 Unused.}
 
-\item{p}{A progress bar object from \code{{progressr}}}
+\item{progressor}{A \code{progressor()} from \code{{progressr}}}
 
 \item{...}{Arguments passed on to \code{mice::mice}. \code{seed} is ignored.}
 }

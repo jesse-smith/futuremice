@@ -13,6 +13,7 @@ future_mice(
   rhat_thresh = 1.05,
   rhat_it = 3L,
   seed = NULL,
+  .progressor = NULL,
   ...
 )
 }
@@ -51,6 +52,12 @@ Convergence is defined as \code{all(tail(rhat, rhat_it) < rhat_thresh)}.}
 \code{NULL}. This seed is not used directly in \code{mice::mice()}; instead, it is
 used to generate separate RNG streams for each \code{future} using the
 parallel-safe L'Ecuyer-CMRG algorithm.}
+
+\item{.progressor}{A \code{\link[progressr]{progressor}} function to signal
+progress updates. \code{future_mice()} uses an internal \code{progressor} by default;
+this is only needed if you want to supply your own. If supplied, you are
+responsible for ensuring that the number of steps in the \code{progressor} is
+consistent with the number of iterations performed in \code{future_mice()}.}
 
 \item{...}{
   Arguments passed on to \code{\link[mice:mice]{mice::mice}}

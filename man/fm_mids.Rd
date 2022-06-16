@@ -4,13 +4,13 @@
 \alias{fm_mids}
 \title{\code{{furrr}}-Friendly \code{mice::mice.mids()} w/ Progress Updates}
 \usage{
-fm_mids(mids, p, mice_args)
+fm_mids(mids, mice_args, progressor)
 }
 \arguments{
 \item{mids}{An object of class \code{mids}, typically produced by a previous call
 to \code{fm_mice()}}
 
-\item{p}{A progress bar object from \code{{progressr}}}
+\item{progressor}{A \code{progressor()} from \code{{progressr}}}
 
 \item{maxit}{The number of additional Gibbs sampling iterations}
 }
