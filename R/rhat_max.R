@@ -20,8 +20,8 @@ rhat_max <- function(data) {
   chain_var  <- aperm(data$chainVar[vrbs, , , drop = FALSE], c(2L, 3L, 1L))
   # Extract chains for each variable and parameter
   seq_n <- seq_len(n)
-  param_mean <- purrr::map(seq_n, ~ chain_mean[, , x])
-  param_var  <- purrr::map(seq_n, ~ chain_var[, , x])
+  param_mean <- purrr::map(seq_n, ~ chain_mean[, , .x])
+  param_var  <- purrr::map(seq_n, ~ chain_var[, , .x])
   # Calculate R-hat for each variable and parameter, then get max
   rhat_max_ <- suppressWarnings(max(
     purrr::map_dbl(c(param_mean, param_var), rstan::Rhat),

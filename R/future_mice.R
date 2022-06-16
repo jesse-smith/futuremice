@@ -36,6 +36,13 @@
 #'   `NULL`. This seed is not used directly in `mice::mice()`; instead, it is
 #'   used to generate separate RNG streams for each `future` using the
 #'   parallel-safe L'Ecuyer-CMRG algorithm.
+#'
+#' @param .progressor A \code{\link[progressr]{progressor}} function to signal
+#'   progress updates. `future_mice()` uses an internal `progressor` by default;
+#'   this is only needed if you want to supply your own. If supplied, you are
+#'   responsible for ensuring that the number of steps in the `progressor` is
+#'   consistent with the number of iterations performed in `future_mice()`.
+#'
 #' @inheritDotParams mice::mice
 #'
 #' @export
@@ -48,6 +55,7 @@ future_mice <- function(
   rhat_thresh = 1.05,
   rhat_it = 3L,
   seed = NULL,
+  .progressor = NULL,
   ...
 ) {
   # Get number of chains per call: greatest common denominator of chunk size & m
@@ -58,27 +66,31 @@ future_mice <- function(
   # Get number of futures
   map_m <- m %/% f_m
 
-  # Collect mice::mice arguments
-  mice_args <- future_mice_args(f_m = f_m, ...)
-
   # Initialize random seed
   seed_is_num <- rlang::is_true(!is.na(seed) && is.numeric(seed))
   seed <- if (seed_is_num) as.integer(seed) else NULL
 
+  # Collect mice::mice arguments
+  mice_args <- fm_mice_args(
+    data = data,
+    predictorMatrix = predictorMatrix,
+    f_m = f_m,
+    seed = seed,
+    ...
+  )
+
   # Initialize mice
   init_args <- mice_args
   init_args$maxit <- 0L
-  init_args$seed <- if (is.null(seed)) NA else seed
   mids <- eval(rlang::call2(mice::mice, !!!init_args))
 
   # Create call and ignore
   mids_call <- mids$call
   mids_call$m <- m
   mids_call$maxit <- 1L
-  mids_ignore <- mids$ignore
 
   # Initialize progress bar
-  p <- progressr::progressor(map_m * maxit)
+  if (is.null(.progressor)) .progressor <- progressr::progressor(map_m * maxit)
 
   # Set furrr options - RNG seeds and chunk size
   f_opts <- furrr::furrr_options(
@@ -91,31 +103,24 @@ future_mice <- function(
   mids_list <- furrr::future_map(
     seq_len(map_m),
     f_mice,
-    p = p,
+    p = .progressor,
     mice_args = mice_args,
     .options = f_opts
   )
 
   # Reduce and calculate R-hat
-  mids <- purrr::reduce(mids_list, mice::ibind)
+  mids <- ibindlist(mids_list, call = mids_call, seed = seed)
   rhat <- rhat_max(mids)
   rhat_lt <- if (is.na(rhat)) FALSE else rhat < rhat_thresh
   rhat_msg <- paste("R-hat:", paste0(round(rhat, 3L), collapse = "/"))
   rhat_msg <- paste(rhat_msg, "<", rhat_thresh)
 
   # Display progress
-  p(message = rhat_msg, amount = 0)
+  .progressor(message = rhat_msg, amount = 0)
 
   # Finish if criteria are met
   if ((rhat_lt && rhat_it == 1L) || maxit == 1L) {
-    future_mice_complete(1L, rhat_lt, rhat_it, rhat_msg)
-    # Update call and ignore
-    mids$call <- mids_call
-    mids$ignore <- mids_ignore
-    # Update imp column names
-    for (i in seq_along(mids$imp)) {
-      colnames(mids$imp[[i]]) <- seq_len(m)
-    }
+    fm_exit_msg(1L, rhat_lt, rhat_it, rhat_msg)
     return(mids)
   }
 
@@ -137,38 +142,29 @@ future_mice <- function(
     mids_list <- furrr::future_map(
       mids_list,
       f_mids,
-      p = p,
+      p = .progressor,
       mice_args = mice_args,
       .options = f_opts
     )
 
     # Reduce and update R-hat
-    mids <- purrr::reduce(mids_list, mice::ibind)
-    mids_call$maxit <- i
+    mids <- ibindlist(mids_list, call = mids_call, seed = seed)
     rhat <- tail(c(rhat, rhat_max(mids)), rhat_it)
     rhat_lt <- ifelse(is.na(rhat), FALSE, rhat < rhat_thresh)
     rhat_msg <- paste("R-hat:", paste0(round(rhat, 3L), collapse = "/"))
     rhat_msg <- paste(rhat_msg, "<", rhat_thresh)
 
     # Update progress
-    p(message = rhat_msg, amount = 0)
+    .progressor(message = rhat_msg, amount = 0)
 
     # Break if criteria are met
     if (all(rhat_lt) && NROW(rhat_lt) >= rhat_it) break
   }
 
   # Show ending message
-  fm_done_msg(i, rhat_lt, rhat_it, rhat_msg)
+  fm_exit_msg(i, rhat_lt, rhat_it, rhat_msg)
 
-  # Update call and ignore
-  mids$call <- mids_call
-  mids$ignore <- mids_ignore
-  # Update imp column names
-  for (i in seq_along(mids$imp)) {
-    colnames(mids$imp[[i]]) <- seq_len(m)
-  }
-
-  # Return combined mids object
+  # Return
   mids
 }
 
@@ -177,23 +173,25 @@ future_mice <- function(
 #'
 #' Helper function to combine and parse named arguments + dots in `future_mice()`
 #'
+#' @param data The input data set from the `future_mice()` call
+#' @param predictorMatrix The predictor matrix from the `future_mice()` call
 #' @param f_m The number of chains per `mice::mice()` call
+#' @param seed A scalar integer or `NULL`
 #' @param ... Additional arguments from the `future_mice()` call
-#' @param .args Arguments from the `future_mice()` call
 #'
 #' @return A list containing arguments to pass to `mice::mice()`
 #'
 #' @keywords internal
-fm_mice_args <- function(f_m, ..., .args = rlang::fn_fmls_syms()) {
-  # Update args
-  # Only keep arguments shared by `mice::mice()`
-  .args <- .args[intersect(names(.args), rlang::fn_fmls_names(mice::mice))]
-  # Exclude dots
-  .args <- .args[-which(names(.args) == "...")]
-  .args$m <- f_m
-  .args$maxit <- 1L
-  .args$printFlag <- FALSE
-
+fm_mice_args <- function(data, predictorMatrix, f_m, seed, ...) {
+  # Create .args
+  .args <- list(
+    data = data,
+    predictorMatrix = predictorMatrix,
+    m = f_m,
+    maxit = 1L,
+    seed = if (is.null(seed)) NA else seed,
+    printFlag = FALSE
+  )
   # Gather dots
   dots <- rlang::list2(...)
 
@@ -208,21 +206,22 @@ fm_mice_args <- function(f_m, ..., .args = rlang::fn_fmls_syms()) {
 
 #' `{furrr}`-Friendly `mice::mice()` w/ Progress Updates
 #'
-#' @param .m Sink for using `{purrr}`-style `map()` functions for iteration.
+#' @param .m Sink that allows iteration w/ `{purrr}`-style `map()` functions.
 #'   Unused.
 #' @inheritParams future_mice
-#' @param p A progress bar object from `{progressr}`
+#' @param progressor A `progressor()` from `{progressr}`
 #' @param ... Arguments passed on to `mice::mice`. `seed` is ignored.
 #'
 #' @return A `mids` object (*m*ultiply *i*mputed *d*ata *s*et)
 #'
 #' @keywords internal
-fm_mice <- function(.m, p, mice_args) {
+fm_mice <- function(.m, mice_args, progressor) {
   # Handle seed
   RNGkind("L'Ecuyer-CMRG")
   mice_args$seed <- sample.int(.Machine$integer.max, size = 1L)
+
   mids <- do.call(mice::mice, mice_args)
-  p()
+  progressor()
   mids
 }
 
@@ -238,12 +237,15 @@ fm_mice <- function(.m, p, mice_args) {
 #'   iterations
 #'
 #' @keywords internal
-fm_mids <- function(mids, p, mice_args) {
+fm_mids <- function(mids, mice_args, progressor) {
+  # Remove seed
+  mice_args$seed <- NULL
+
   mids <- do.call(
     mice::mice.mids,
-    c(list(mids = mids, newdata = NULL), mice_args)
+    c(list(obj = mids, newdata = NULL, printFlag = FALSE), mice_args)
   )
-  p()
+  progressor()
   mids
 }
 
@@ -251,8 +253,8 @@ fm_mids <- function(mids, p, mice_args) {
 #' Throw Messages/Warnings at End of `future_mice()` Execution
 #'
 #' @param i Integer(ish) representing iteration count
-#' @param rhat_lt Logical vector of R-hat comparisons (see Details).
-#'   `length(rhat_lt)` must be less than or equal to `rhat_it`
+#' @param rhat_lt Logical vector of R-hat comparisons. `length(rhat_lt)` must be
+#'   less than or equal to `rhat_it`.
 #' @param rhat_it Integer(ish) number of iterations used in R-hat comparison
 #' @param rhat_msg Contents of `message` displaying R-hat values for last
 #'   `rhat_it` iterations
@@ -260,7 +262,7 @@ fm_mids <- function(mids, p, mice_args) {
 #' @return `NULL`, invisibly
 #'
 #' @keywords internal
-fm_done_msg <- function(i, rhat_lt, rhat_it, rhat_msg) {
+fm_exit_msg <- function(i, rhat_lt, rhat_it, rhat_msg) {
   if (all(rhat_lt) && NROW(rhat_lt) >= rhat_it) {
     iters <- paste(i, if (i == 1L) "iteration" else "iterations")
     rlang::inform(paste0(
@@ -271,4 +273,5 @@ fm_done_msg <- function(i, rhat_lt, rhat_it, rhat_msg) {
     rlang::warn("Sampling did not converge", use_cli_format = TRUE)
     rlang::inform(rhat_msg, use_cli_format = TRUE)
   }
+  invisible(NULL)
 }

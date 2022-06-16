@@ -22,25 +22,38 @@
 ibindlist <- function(mids_list, call = NULL, seed = NULL) {
   # Combine into single `mids` object
   mids <- purrr::reduce(mids_list, mice::ibind)
+
   # Set `ignore` attribute
   mids$ignore <- mids_list[[1L]]$ignore
-  # Set `call` attribute
-  if (is.null(call)) {
-    call <- mids_list[[1L]]$call
-  } else if (!rlang::is_call(call)) {
-    rlang::abort("`call` must be a call object or `NULL`")
-  }
-  mids$call <- call
-  # Set seed attribute
+
+  # Set `seed` attribute
   if (!is.null(seed)) {
     if (!(rlang::is_scalar_integerish(seed) || is.na(seed))) {
       rlang::abort("`seed` must be a scalar integer, `NA`, or `NULL`")
     }
     mids$seed <- seed
   }
+
+  # Set `call` attribute
+  if (is.null(call)) {
+    call <- mids_list[[1L]]$call
+  } else if (!rlang::is_call(call)) {
+    rlang::abort("`call` must be a call object or `NULL`")
+  }
+  call_arg_nms <- c(
+    rlang::call_args_names(call),
+    rlang::fn_fmls_names(rlang::call_fn(call))
+  )
+  call_arg_nms <- call_arg_nms[nchar(call_arg_nms) > 0L]
+  if ("m" %in% call_arg_nms) call$m <- mids$m
+  if ("maxit" %in% call_arg_nms) call$maxit <- mids$maxit
+  if ("seed" %in% call_arg_nms && !is.null(seed)) call$seed <- mids$seed
+  mids$call <- call
+
   # Set names of imputation data frames
   nms <- as.character(seq_len(mids$m))
   mids$imp <- purrr::map(mids$imp, fm_set_colnames, names = nms)
+
   # Return
   mids
 }
