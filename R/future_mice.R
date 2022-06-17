@@ -138,7 +138,7 @@ future_mice <- function(
   mids <- ibindlist(mids_list, call = call, seed = mice_seed(seed), last_seed_value = .Random.seed)
   rhat <- rhat_max(mids)
   rhat_lt <- if (is.na(rhat)) FALSE else rhat < rhat_thresh
-  rhat_msg <- paste("R-hat:", paste0(round(rhat, 3L), collapse = "/"))
+  rhat_msg <- paste("R-hat:", round(rhat, 3L))
   rhat_msg <- paste(rhat_msg, "<", rhat_thresh)
 
   # Display progress
