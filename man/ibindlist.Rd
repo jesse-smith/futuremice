@@ -29,8 +29,8 @@ number of imputed data sets in each list element.
 }
 \details{
 The \code{call} and \code{seed} arguments are primarily used by
-\code{\link[future_mice]{future_mice()}} and
-\code{\link[future_mids]{future_mids()}}; they allow modification of the
+\code{\link[futuremice:future_mice]{future_mice()}} and
+\code{\link[futuremice:future_mids]{future_mids()}}; they allow modification of the
 \code{mids} object to match the equivalent \code{\link[mice:mice]{mice::mice()}}
 output exactly.
 }

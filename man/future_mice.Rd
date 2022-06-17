@@ -2,7 +2,7 @@
 % Please edit documentation in R/future_mice.R
 \name{future_mice}
 \alias{future_mice}
-\title{Parallelize \code{\link[mice::mice]{`mice::mice()`}}  Using \code{{future}}}
+\title{Parallelize \code{\link[mice:mice]{`mice::mice()`}}  Using \code{{future}}}
 \usage{
 future_mice(
   data,
@@ -178,7 +178,7 @@ Returns an S3 object of class \code{\link[mice:mids-class]{mids}}
 Equations (MICE) using the \code{{furrr}} package to create
 \code{\link[future]{future}}s for chains. Chains are also assessed for
 convergence using the R-hat (potential scale reduction factor) statistic
-computed by \code{\link[rstan::Rhat]{rstan::Rhat()}}; if the largest R-hat is
+computed by \code{\link[rstan:Rhat]{rstan::Rhat()}}; if the largest R-hat is
 less than \code{rhat_thresh} for \code{rhat_it} iterations, the function returns early
 (without completing \code{maxit} iterations). This can save a significant amount
 of computation and manual convergence checking. However, a "good" R-hat is

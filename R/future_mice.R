@@ -1,10 +1,10 @@
-#' Parallelize \code{\link[mice::mice]{`mice::mice()`}}  Using `{future}`
+#' Parallelize \code{\link[mice:mice]{`mice::mice()`}}  Using `{future}`
 #'
 #' `future_mice()` parallelizes chains in Multivariate Imputation using Chained
 #' Equations (MICE) using the `{furrr}` package to create
 #' \code{\link[future]{future}}s for chains. Chains are also assessed for
 #' convergence using the R-hat (potential scale reduction factor) statistic
-#' computed by \code{\link[rstan::Rhat]{rstan::Rhat()}}; if the largest R-hat is
+#' computed by \code{\link[rstan:Rhat]{rstan::Rhat()}}; if the largest R-hat is
 #' less than `rhat_thresh` for `rhat_it` iterations, the function returns early
 #' (without completing `maxit` iterations). This can save a significant amount
 #' of computation and manual convergence checking. However, a "good" R-hat is
@@ -175,7 +175,7 @@ future_mice <- function(
 
     # Reduce and update R-hat
     mids <- ibindlist(mids_list, call = call, seed = mice_seed(seed), last_seed_value = .Random.seed)
-    rhat <- tail(c(rhat, rhat_max(mids)), rhat_it)
+    rhat <- utils::tail(c(rhat, rhat_max(mids)), rhat_it)
     rhat_lt <- ifelse(is.na(rhat), FALSE, rhat < rhat_thresh)
     rhat_msg <- paste("R-hat:", paste0(round(rhat, 3L), collapse = "/"))
     rhat_msg <- paste(rhat_msg, "<", rhat_thresh)
