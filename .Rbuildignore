@@ -1,3 +1,5 @@
+^renv$
+^renv\.lock$
 ^futuremice\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
