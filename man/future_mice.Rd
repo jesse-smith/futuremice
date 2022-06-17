@@ -6,20 +6,40 @@
 \usage{
 future_mice(
   data,
-  predictorMatrix,
   m = 5L,
-  maxit = 100L,
+  method = NULL,
+  predictorMatrix = NULL,
+  ignore = NULL,
+  where = NULL,
+  blocks = NULL,
+  visitSequence = NULL,
+  formulas = NULL,
+  blots = NULL,
+  post = NULL,
+  defaultMethod = c("pmm", "logreg", "polyreg", "polr"),
+  maxit = 50L,
+  seed = NA,
+  data.init = NULL,
   chunk_size = 1L,
   rhat_thresh = 1.05,
   rhat_it = 3L,
-  seed = NULL,
-  .progressor = NULL,
+  progressor = NULL,
   ...
 )
 }
 \arguments{
 \item{data}{A data frame or a matrix containing the incomplete data.  Missing
 values are coded as \code{NA}.}
+
+\item{m}{Number of multiple imputations. The default is \code{m=5}.}
+
+\item{method}{Can be either a single string, or a vector of strings with
+length \code{length(blocks)}, specifying the imputation method to be
+used for each column in data. If specified as a single string, the same
+method will be used for all blocks. The default imputation method (when no
+argument is specified) depends on the measurement level of the target column,
+as regulated by the \code{defaultMethod} argument. Columns that need
+not be imputed have the empty method \code{""}. See details.}
 
 \item{predictorMatrix}{A numeric matrix of \code{length(blocks)} rows
 and \code{ncol(data)} columns, containing 0/1 data specifying
@@ -32,44 +52,7 @@ rows and columns with all 1's, except for the diagonal.
 Note: For two-level imputation models (which have \code{"2l"} in their names)
 other codes (e.g, \code{2} or \code{-2}) are also allowed.}
 
-\item{m}{Number of multiple imputations. The default is \code{m=5}.}
-
-\item{maxit}{A scalar giving the maximum number of iterations. \code{future_mice()}
-will use less than \code{maxit} iterations if convergence criteria are met.}
-
-\item{chunk_size}{The average number of chains per future. Differs from the
-usual \code{{future}} parameter in that multiple chains ("chunks") will be
-evaluated in a single call to \code{mice::mice()} if \code{chunk_size} and \code{m} share
-a greatest common denominator higher than \code{1}.}
-
-\item{rhat_thresh}{The R-hat threshold used to assess convergence.
-Convergence is defined as \code{all(tail(rhat, rhat_it) < rhat_thresh)}.}
-
-\item{rhat_it}{The number of iterations used to assess convergence.
-Convergence is defined as \code{all(tail(rhat, rhat_it) < rhat_thresh)}.}
-
-\item{seed}{Seed for random number generation; either a length 1 integer or
-\code{NULL}. This seed is not used directly in \code{mice::mice()}; instead, it is
-used to generate separate RNG streams for each \code{future} using the
-parallel-safe L'Ecuyer-CMRG algorithm.}
-
-\item{.progressor}{A \code{\link[progressr]{progressor}} function to signal
-progress updates. \code{future_mice()} uses an internal \code{progressor} by default;
-this is only needed if you want to supply your own. If supplied, you are
-responsible for ensuring that the number of steps in the \code{progressor} is
-consistent with the number of iterations performed in \code{future_mice()}.}
-
-\item{...}{
-  Arguments passed on to \code{\link[mice:mice]{mice::mice}}
-  \describe{
-    \item{\code{method}}{Can be either a single string, or a vector of strings with
-length \code{length(blocks)}, specifying the imputation method to be
-used for each column in data. If specified as a single string, the same
-method will be used for all blocks. The default imputation method (when no
-argument is specified) depends on the measurement level of the target column,
-as regulated by the \code{defaultMethod} argument. Columns that need
-not be imputed have the empty method \code{""}. See details.}
-    \item{\code{ignore}}{A logical vector of \code{nrow(data)} elements indicating
+\item{ignore}{A logical vector of \code{nrow(data)} elements indicating
 which rows are ignored when creating the imputation model. The default
 \code{NULL} includes all rows that have an observed value of the variable
 to imputed. Rows with \code{ignore} set to \code{TRUE} do not influence the
@@ -79,12 +62,14 @@ imputation model is built) and a test set (that does not influence the
 imputation model estimates).
 Note: Multivariate imputation methods, like \code{mice.impute.jomoImpute()}
 or \code{mice.impute.panImpute()}, do not honour the \code{ignore} argument.}
-    \item{\code{where}}{A data frame or matrix with logicals of the same dimensions
+
+\item{where}{A data frame or matrix with logicals of the same dimensions
 as \code{data} indicating where in the data the imputations should be
 created. The default, \code{where = is.na(data)}, specifies that the
 missing data should be imputed. The \code{where} argument may be used to
 overimpute observed data, or to skip imputations for selected missing values.}
-    \item{\code{blocks}}{List of vectors with variable names per block. List elements
+
+\item{blocks}{List of vectors with variable names per block. List elements
 may be named to identify blocks. Variables within a block are
 imputed by a multivariate imputation method
 (see \code{method} argument). By default each variable is placed
@@ -95,7 +80,8 @@ fully conditional specification (FCS) by univariate models
 matrix are set to \code{FALSE} of variables that are not block members.
 A variable may appear in multiple blocks. In that case, it is
 effectively re-imputed each time that it is visited.}
-    \item{\code{visitSequence}}{A vector of block names of arbitrary length, specifying the
+
+\item{visitSequence}{A vector of block names of arbitrary length, specifying the
 sequence of blocks that are imputed during one iteration of the Gibbs
 sampler. A block is a collection of variables. All variables that are
 members of the same block are imputed
@@ -111,24 +97,28 @@ of missing data) and \code{"revmonotone"} (reverse of monotone).
 to conform to the monotone pattern. Realize that convergence in one
 iteration is only guaranteed if the missing data pattern is actually
 monotone. The procedure does not check this.}
-    \item{\code{formulas}}{A named list of formula's, or expressions that
+
+\item{formulas}{A named list of formula's, or expressions that
 can be converted into formula's by \code{as.formula}. List elements
 correspond to blocks. The block to which the list element applies is
 identified by its name, so list names must correspond to block names.
 The \code{formulas} argument is an alternative to the
 \code{predictorMatrix} argument that allows for more flexibility in
 specifying imputation models, e.g., for specifying interaction terms.}
-    \item{\code{blots}}{A named \code{list} of \code{alist}'s that can be used
+
+\item{blots}{A named \code{list} of \code{alist}'s that can be used
 to pass down arguments to lower level imputation function. The entries
 of element \code{blots[[blockname]]} are passed down to the function
 called for block \code{blockname}.}
-    \item{\code{post}}{A vector of strings with length \code{ncol(data)} specifying
+
+\item{post}{A vector of strings with length \code{ncol(data)} specifying
 expressions as strings. Each string is parsed and
 executed within the \code{sampler()} function to post-process
 imputed values during the iterations.
 The default is a vector of empty strings, indicating no post-processing.
 Multivariate (block) imputation methods ignore the \code{post} parameter.}
-    \item{\code{defaultMethod}}{A vector of length 4 containing the default
+
+\item{defaultMethod}{A vector of length 4 containing the default
 imputation methods for 1) numeric data, 2) factor data with 2 levels, 3)
 factor data with > 2 unordered levels, and 4) factor data with > 2
 ordered levels. By default, the method uses
@@ -136,14 +126,47 @@ ordered levels. By default, the method uses
 regression imputation (binary data, factor with 2 levels) \code{polyreg},
 polytomous regression imputation for unordered categorical data (factor > 2
 levels) \code{polr}, proportional odds model for (ordered, > 2 levels).}
-    \item{\code{printFlag}}{If \code{TRUE}, \code{mice} will print history on console.
-Use \code{print=FALSE} for silent computation.}
-    \item{\code{data.init}}{A data frame of the same size and type as \code{data},
+
+\item{maxit}{A scalar giving the maximum number of iterations.
+\code{future_mice()} will use less than \code{maxit} iterations if convergence
+criteria are met; because of this, the default is \code{maxit = 50}, which is
+much larger than the \code{{mice}} default of \code{maxit = 5} but is large enough to
+"just work" in many situations without potentially running for days on end
+if convergence is not achieved.}
+
+\item{seed}{Seed for random number generation; either a scalar \code{integer},
+\code{NA}, or \code{NULL}. This seed is not used directly in \code{mice::mice()}; instead,
+it is used to generate separate RNG streams for each \code{future} using the
+parallel-safe L'Ecuyer-CMRG algorithm.}
+
+\item{data.init}{A data frame of the same size and type as \code{data},
 without missing data, used to initialize imputations before the start of the
 iterative process.  The default \code{NULL} implies that starting imputation
 are created by a simple random draw from the data. Note that specification of
 \code{data.init} will start all \code{m} Gibbs sampling streams from the same
 imputation.}
+
+\item{chunk_size}{The average number of chains per future. Differs from the
+usual \code{{future}} parameter in that multiple chains ("chunks") will be
+evaluated in a single call to \code{mice::mice()} if there is an integer \code{i}
+such that \verb{1 < i <= chunk_size} and \code{m \%\% i == 0}.}
+
+\item{rhat_thresh}{The R-hat threshold used to assess convergence.
+Convergence is defined as \code{all(tail(rhat, rhat_it) < rhat_thresh)}.}
+
+\item{rhat_it}{The number of iterations used to assess convergence.
+Convergence is defined as \code{all(tail(rhat, rhat_it) < rhat_thresh)}.}
+
+\item{progressor}{An optional \code{\link[progressr]{progressor}}
+function to signal progress updates. If supplied, you are responsible for
+ensuring that the number of steps in the \code{progressor} is consistent with
+the number of iterations performed in \code{future_mice()}.}
+
+\item{...}{
+  Arguments passed on to \code{\link[mice:mice]{mice::mice}}
+  \describe{
+    \item{\code{printFlag}}{If \code{TRUE}, \code{mice} will print history on console.
+Use \code{print=FALSE} for silent computation.}
   }}
 }
 \value{
@@ -172,4 +195,24 @@ means of passive imputation and post-processing. Many diagnostic plots are
 implemented to inspect the quality of the imputations. See the
 \code{\link[mice:mice]{mice::mice()}} function and the vignettes on the
 \href{https://amices.org/mice/}{\code{{mice}}} package website for details.
+
+\code{future_mice()} mimics the \code{mice::mice()} interface as closely as possible;
+however, some shared parameters have different defaults than their \code{{mice}}
+equivalents. Notably, the default \code{maxit} is much larger than in \code{{mice}};
+this is because \code{maxit} is an upper bound in \code{future_mice()}, rather than an
+exact number of iterations, as in \code{mice()}. The default of \code{100} should be
+more than enough iterations for most problems; if you need more than \code{100}
+iterations for convergence, you may want to check your imputation model for
+circularity or other stability issues.
+
+Additionally, \code{future_mice()} provides \code{NULL} defaults for all unset
+arguments; this is a best practice in \code{R}. Because of this, passing \code{NULL}
+to any argument without an explicit default is the same as not passing that
+argument, which differs from the behavior of \code{mice()} in some instances.
+
+Finally, some output attributes are not identical to their equivalents in
+\code{mice()}. In particular, the \code{call} attribute contains the call to \code{future_mice()},
+rather than a call to \code{mice()}. The \code{lastSeedValue} should be equivalent, but
+does not function identically in subsequent calls to \code{mice.mids()} and
+\code{future_mids()}.
 }

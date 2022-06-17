@@ -4,18 +4,12 @@
 \alias{fm_mice_args}
 \title{Combine Arguments in \code{future_mice()}}
 \usage{
-fm_mice_args(data, predictorMatrix, f_m, seed, ...)
+fm_mice_args(f_m, .args = caller_args(n = 2L))
 }
 \arguments{
-\item{data}{The input data set from the \code{future_mice()} call}
-
-\item{predictorMatrix}{The predictor matrix from the \code{future_mice()} call}
-
 \item{f_m}{The number of chains per \code{mice::mice()} call}
 
-\item{seed}{A scalar integer or \code{NULL}}
-
-\item{...}{Additional arguments from the \code{future_mice()} call}
+\item{.args}{A named list of arguments from the \code{future_mice()} call}
 }
 \value{
 A list containing arguments to pass to \code{mice::mice()}

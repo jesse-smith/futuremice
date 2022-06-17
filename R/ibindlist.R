@@ -15,11 +15,14 @@
 #'   `mids` object. The default uses the call in `mids_list[[1]]$call`.
 #' @param seed An optional integer to set as the `seed` attribute of the
 #'   resulting `mids` object.
+#' @param last_seed_value An optional \code{\link[base:Random]{.Random.seed}}
+#'   value to set as the `lastSeedValue` attribute of the resulting `mids`
+#'   object
 #'
 #' @return A combined `mids` object
 #'
 #' @export
-ibindlist <- function(mids_list, call = NULL, seed = NULL) {
+ibindlist <- function(mids_list, call = NULL, seed = NULL, last_seed_value = NULL) {
   # Combine into single `mids` object
   mids <- purrr::reduce(mids_list, mice::ibind)
 
@@ -27,12 +30,10 @@ ibindlist <- function(mids_list, call = NULL, seed = NULL) {
   mids$ignore <- mids_list[[1L]]$ignore
 
   # Set `seed` attribute
-  if (!is.null(seed)) {
-    if (!(rlang::is_scalar_integerish(seed) || is.na(seed))) {
-      rlang::abort("`seed` must be a scalar integer, `NA`, or `NULL`")
-    }
-    mids$seed <- seed
-  }
+  if (!is.null(seed)) mids$seed <- mice_seed(seed)
+
+  # Set `lastSeedValue` attribute
+  if (!is.null(last_seed_value)) mids$lastSeedValue <- last_seed_value
 
   # Set `call` attribute
   if (is.null(call)) {

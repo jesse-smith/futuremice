@@ -4,7 +4,7 @@
 \alias{ibindlist}
 \title{Combine a List of \code{\link[mice]{mids}} Objects}
 \usage{
-ibindlist(mids_list, call = NULL, seed = NULL)
+ibindlist(mids_list, call = NULL, seed = NULL, last_seed_value = NULL)
 }
 \arguments{
 \item{mids_list}{List of \code{mids} objects to combine}
@@ -14,6 +14,10 @@ ibindlist(mids_list, call = NULL, seed = NULL)
 
 \item{seed}{An optional integer to set as the \code{seed} attribute of the
 resulting \code{mids} object.}
+
+\item{last_seed_value}{An optional \code{\link[base:Random]{.Random.seed}}
+value to set as the \code{lastSeedValue} attribute of the resulting \code{mids}
+object}
 }
 \value{
 A combined \code{mids} object
