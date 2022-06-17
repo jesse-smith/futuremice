@@ -5,10 +5,32 @@
 #'
 #' @param data An object of class `mids` as created by `mice::mice()`
 #'
-#' @return A legnth 1 double containing the maximum R-hat statistic
+#' @return A scalar `double` containing the maximum R-hat statistic
 #'
 #' @keywords internal
 rhat_max <- function(data) {
+  params <- prep_diagnostic_params(data)
+  # Calculate R-hat for each variable and parameter, then get max
+  rhat_max_ <- suppressWarnings(max(
+    purrr::map_dbl(params, rstan::Rhat),
+    na.rm = TRUE
+  ))
+  # Replace infinite value w/ NA
+  if (is.infinite(rhat_max_) || is.nan(rhat_max_)) rhat_max_ <- NA_real_
+
+  rhat_max_
+}
+
+
+#' Extract Chain Means and Variances from a `mids` object
+#'
+#' @inheritParams rhat_max
+#'
+#' @return A list of 2D matrices (one for each imputed variable) with rows
+#'   corresponding to iterations and columns corresponding to chains
+#'
+#' @keywords internal
+prep_diagnostic_params <- function(data) {
   # Input checks
   if (!mice::is.mids(data)) rlang::abort("`data` not of class 'mids'")
   if (is.null(data$chainMean)) rlang::abort("No convergence diagnostics found")
@@ -22,11 +44,6 @@ rhat_max <- function(data) {
   seq_n <- seq_len(n)
   param_mean <- purrr::map(seq_n, ~ chain_mean[, , .x])
   param_var  <- purrr::map(seq_n, ~ chain_var[, , .x])
-  # Calculate R-hat for each variable and parameter, then get max
-  rhat_max_ <- suppressWarnings(max(
-    purrr::map_dbl(c(param_mean, param_var), rstan::Rhat),
-    na.rm = TRUE
-  ))
-  # Return, replacing infinite value w/ NA
-  if (is.infinite(rhat_max_)) NA_real_ else rhat_max_
+
+  c(param_mean, param_var)
 }

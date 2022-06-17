@@ -10,7 +10,7 @@ rhat_max(data)
 \item{data}{An object of class \code{mids} as created by \code{mice::mice()}}
 }
 \value{
-A legnth 1 double containing the maximum R-hat statistic
+A scalar \code{double} containing the maximum R-hat statistic
 }
 \description{
 Calculates the largest R-hat statistic across all variables and chain
