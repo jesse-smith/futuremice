@@ -61,9 +61,9 @@ not a substitute for assessing imputation quality.'><!-- mathjax --><script src=
     <div class="ref-description section level2">
     <p><code>future_mice()</code> parallelizes chains in Multivariate Imputation using Chained
 Equations (MICE) using the <code>{furrr}</code> package to create
-<code>future</code>s for chains. Chains are also assessed for
+<code><a href="https://future.futureverse.org/reference/future.html" class="external-link">future</a></code>s for chains. Chains are also assessed for
 convergence using the R-hat (potential scale reduction factor) statistic
-computed by <code>rstan::Rhat()</code>; if the largest R-hat is
+computed by <code><a href="https://mc-stan.org/rstan/reference/Rhat.html" class="external-link">rstan::Rhat()</a></code>; if the largest R-hat is
 less than <code>rhat_thresh</code> for <code>rhat_it</code> iterations, the function returns early
 (without completing <code>maxit</code> iterations). This can save a significant amount
 of computation and manual convergence checking. However, a "good" R-hat is
@@ -74,13 +74,24 @@ not a substitute for assessing imputation quality.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">future_mice</span><span class="op">(</span>
   <span class="va">data</span>,
-  <span class="va">predictorMatrix</span>,
   m <span class="op">=</span> <span class="fl">5L</span>,
-  maxit <span class="op">=</span> <span class="fl">100L</span>,
+  method <span class="op">=</span> <span class="cn">NULL</span>,
+  predictorMatrix <span class="op">=</span> <span class="cn">NULL</span>,
+  ignore <span class="op">=</span> <span class="cn">NULL</span>,
+  where <span class="op">=</span> <span class="cn">NULL</span>,
+  blocks <span class="op">=</span> <span class="cn">NULL</span>,
+  visitSequence <span class="op">=</span> <span class="cn">NULL</span>,
+  formulas <span class="op">=</span> <span class="cn">NULL</span>,
+  blots <span class="op">=</span> <span class="cn">NULL</span>,
+  post <span class="op">=</span> <span class="cn">NULL</span>,
+  defaultMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pmm"</span>, <span class="st">"logreg"</span>, <span class="st">"polyreg"</span>, <span class="st">"polr"</span><span class="op">)</span>,
+  maxit <span class="op">=</span> <span class="fl">50L</span>,
+  seed <span class="op">=</span> <span class="cn">NA</span>,
+  data.init <span class="op">=</span> <span class="cn">NULL</span>,
   chunk_size <span class="op">=</span> <span class="fl">1L</span>,
   rhat_thresh <span class="op">=</span> <span class="fl">1.05</span>,
   rhat_it <span class="op">=</span> <span class="fl">3L</span>,
-  seed <span class="op">=</span> <span class="cn">NULL</span>,
+  progressor <span class="op">=</span> <span class="cn">NULL</span>,
   <span class="va">...</span>
 <span class="op">)</span></code></pre></div>
     </div>
@@ -90,6 +101,22 @@ not a substitute for assessing imputation quality.</p>
     <dl><dt>data</dt>
 <dd><p>A data frame or a matrix containing the incomplete data.  Missing
 values are coded as <code>NA</code>.</p></dd>
+
+
+<dt>m</dt>
+<dd><p>Number of multiple imputations. The default is <code>m=5</code>.</p></dd>
+
+
+<dt>method</dt>
+<dd><p>Can be either a single string, or a vector of strings with
+length <code>length(blocks)</code>, specifying the imputation method to be
+used for each column in data. If specified as a single string, the same
+method will be used for all blocks. The default imputation method (when no
+argument is specified) depends on the measurement level of the target column,
+as regulated by the <code>defaultMethod</code> argument. Columns that need
+not be imputed have the empty method <code>""</code>. See details.</p></dd>
+
+
 <dt>predictorMatrix</dt>
 <dd><p>A numeric matrix of <code>length(blocks)</code> rows
 and <code>ncol(data)</code> columns, containing 0/1 data specifying
@@ -101,38 +128,9 @@ By default, the <code>predictorMatrix</code> is a square matrix of <code>ncol(da
 rows and columns with all 1's, except for the diagonal.
 Note: For two-level imputation models (which have <code>"2l"</code> in their names)
 other codes (e.g, <code>2</code> or <code>-2</code>) are also allowed.</p></dd>
-<dt>m</dt>
-<dd><p>Number of multiple imputations. The default is <code>m=5</code>.</p></dd>
-<dt>maxit</dt>
-<dd><p>A scalar giving the maximum number of iterations. <code>future_mice()</code>
-will use less than <code>maxit</code> iterations if convergence criteria are met.</p></dd>
-<dt>chunk_size</dt>
-<dd><p>The average number of chains per future. Differs from the
-usual <code>{future}</code> parameter in that multiple chains ("chunks") will be
-evaluated in a single call to <code>mice::mice()</code> if <code>chunk_size</code> and <code>m</code> share
-a greatest common denominator higher than <code>1</code>.</p></dd>
-<dt>rhat_thresh</dt>
-<dd><p>The R-hat threshold used to assess convergence.
-Convergence is defined as <code>all(tail(rhat, rhat_it) &lt; rhat_thresh)</code>.</p></dd>
-<dt>rhat_it</dt>
-<dd><p>The number of iterations used to assess convergence.
-Convergence is defined as <code>all(tail(rhat, rhat_it) &lt; rhat_thresh)</code>.</p></dd>
-<dt>seed</dt>
-<dd><p>Seed for random number generation; either a length 1 integer or
-<code>NULL</code>. This seed is not used directly in <code>mice::mice()</code>; instead, it is
-used to generate separate RNG streams for each <code>future</code> using the
-parallel-safe L'Ecuyer-CMRG algorithm.</p></dd>
-<dt>...</dt>
-<dd><p>Arguments passed on to <code>mice::mice</code></p><dl><dt><code>method</code></dt>
-<dd><p>Can be either a single string, or a vector of strings with
-length <code>length(blocks)</code>, specifying the imputation method to be
-used for each column in data. If specified as a single string, the same
-method will be used for all blocks. The default imputation method (when no
-argument is specified) depends on the measurement level of the target column,
-as regulated by the <code>defaultMethod</code> argument. Columns that need
-not be imputed have the empty method <code>""</code>. See details.</p></dd>
 
-    <dt><code>ignore</code></dt>
+
+<dt>ignore</dt>
 <dd><p>A logical vector of <code>nrow(data)</code> elements indicating
 which rows are ignored when creating the imputation model. The default
 <code>NULL</code> includes all rows that have an observed value of the variable
@@ -144,14 +142,16 @@ imputation model estimates).
 Note: Multivariate imputation methods, like <code>mice.impute.jomoImpute()</code>
 or <code>mice.impute.panImpute()</code>, do not honour the <code>ignore</code> argument.</p></dd>
 
-    <dt><code>where</code></dt>
+
+<dt>where</dt>
 <dd><p>A data frame or matrix with logicals of the same dimensions
 as <code>data</code> indicating where in the data the imputations should be
 created. The default, <code>where = is.na(data)</code>, specifies that the
 missing data should be imputed. The <code>where</code> argument may be used to
 overimpute observed data, or to skip imputations for selected missing values.</p></dd>
 
-    <dt><code>blocks</code></dt>
+
+<dt>blocks</dt>
 <dd><p>List of vectors with variable names per block. List elements
 may be named to identify blocks. Variables within a block are
 imputed by a multivariate imputation method
@@ -164,7 +164,8 @@ matrix are set to <code>FALSE</code> of variables that are not block members.
 A variable may appear in multiple blocks. In that case, it is
 effectively re-imputed each time that it is visited.</p></dd>
 
-    <dt><code>visitSequence</code></dt>
+
+<dt>visitSequence</dt>
 <dd><p>A vector of block names of arbitrary length, specifying the
 sequence of blocks that are imputed during one iteration of the Gibbs
 sampler. A block is a collection of variables. All variables that are
@@ -182,7 +183,8 @@ to conform to the monotone pattern. Realize that convergence in one
 iteration is only guaranteed if the missing data pattern is actually
 monotone. The procedure does not check this.</p></dd>
 
-    <dt><code>formulas</code></dt>
+
+<dt>formulas</dt>
 <dd><p>A named list of formula's, or expressions that
 can be converted into formula's by <code>as.formula</code>. List elements
 correspond to blocks. The block to which the list element applies is
@@ -191,13 +193,15 @@ The <code>formulas</code> argument is an alternative to the
 <code>predictorMatrix</code> argument that allows for more flexibility in
 specifying imputation models, e.g., for specifying interaction terms.</p></dd>
 
-    <dt><code>blots</code></dt>
+
+<dt>blots</dt>
 <dd><p>A named <code>list</code> of <code>alist</code>'s that can be used
 to pass down arguments to lower level imputation function. The entries
 of element <code>blots[[blockname]]</code> are passed down to the function
 called for block <code>blockname</code>.</p></dd>
 
-    <dt><code>post</code></dt>
+
+<dt>post</dt>
 <dd><p>A vector of strings with length <code>ncol(data)</code> specifying
 expressions as strings. Each string is parsed and
 executed within the <code>sampler()</code> function to post-process
@@ -205,7 +209,8 @@ imputed values during the iterations.
 The default is a vector of empty strings, indicating no post-processing.
 Multivariate (block) imputation methods ignore the <code>post</code> parameter.</p></dd>
 
-    <dt><code>defaultMethod</code></dt>
+
+<dt>defaultMethod</dt>
 <dd><p>A vector of length 4 containing the default
 imputation methods for 1) numeric data, 2) factor data with 2 levels, 3)
 factor data with &gt; 2 unordered levels, and 4) factor data with &gt; 2
@@ -215,11 +220,24 @@ regression imputation (binary data, factor with 2 levels) <code>polyreg</code>,
 polytomous regression imputation for unordered categorical data (factor &gt; 2
 levels) <code>polr</code>, proportional odds model for (ordered, &gt; 2 levels).</p></dd>
 
-    <dt><code>printFlag</code></dt>
-<dd><p>If <code>TRUE</code>, <code>mice</code> will print history on console.
-Use <code>print=FALSE</code> for silent computation.</p></dd>
 
-    <dt><code>data.init</code></dt>
+<dt>maxit</dt>
+<dd><p>A scalar giving the maximum number of iterations.
+<code>future_mice()</code> will use less than <code>maxit</code> iterations if convergence
+criteria are met; because of this, the default is <code>maxit = 50</code>, which is
+much larger than the <code>{mice}</code> default of <code>maxit = 5</code> but is large enough to
+"just work" in many situations without potentially running for days on end
+if convergence is not achieved.</p></dd>
+
+
+<dt>seed</dt>
+<dd><p>Seed for random number generation; either a scalar <code>integer</code>,
+<code>NA</code>, or <code>NULL</code>. This seed is not used directly in <code><a href="https://amices.org/mice/reference/mice.html" class="external-link">mice::mice()</a></code>; instead,
+it is used to generate separate RNG streams for each <code>future</code> using the
+parallel-safe L'Ecuyer-CMRG algorithm.</p></dd>
+
+
+<dt>data.init</dt>
 <dd><p>A data frame of the same size and type as <code>data</code>,
 without missing data, used to initialize imputations before the start of the
 iterative process.  The default <code>NULL</code> implies that starting imputation
@@ -227,12 +245,48 @@ are created by a simple random draw from the data. Note that specification of
 <code>data.init</code> will start all <code>m</code> Gibbs sampling streams from the same
 imputation.</p></dd>
 
+
+<dt>chunk_size</dt>
+<dd><p>The average number of chains per future. Differs from the
+usual <code>{future}</code> parameter in that multiple chains ("chunks") will be
+evaluated in a single call to <code><a href="https://amices.org/mice/reference/mice.html" class="external-link">mice::mice()</a></code> if there is an integer <code>i</code>
+such that <code>1 &lt; i &lt;= chunk_size</code> and <code>m %% i == 0</code>.</p></dd>
+
+
+<dt>rhat_thresh</dt>
+<dd><p>The R-hat threshold used to assess convergence.
+Convergence is defined as <code>all(tail(rhat, rhat_it) &lt; rhat_thresh)</code>.</p></dd>
+
+
+<dt>rhat_it</dt>
+<dd><p>The number of iterations used to assess convergence.
+Convergence is defined as <code>all(tail(rhat, rhat_it) &lt; rhat_thresh)</code>.</p></dd>
+
+
+<dt>progressor</dt>
+<dd><p>An optional <code><a href="https://progressr.futureverse.org/reference/progressor.html" class="external-link">progressor</a></code>
+function to signal progress updates. If supplied, you are responsible for
+ensuring that the number of steps in the <code>progressor</code> is consistent with
+the number of iterations performed in <code>future_mice()</code>.</p></dd>
+
+
+<dt>...</dt>
+<dd><p>Arguments passed on to <code><a href="https://amices.org/mice/reference/mice.html" class="external-link">mice::mice</a></code></p><dl><dt><code>printFlag</code></dt>
+<dd><p>If <code>TRUE</code>, <code>mice</code> will print history on console.
+Use <code>print=FALSE</code> for silent computation.</p></dd>
+
   
 </dl></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Returns an S3 object of class <code>mids</code>       (multiply imputed data set)</p>
+    
+
+<p>Returns an S3 object of class <code><a href="https://amices.org/mice/reference/mids-class.html" class="external-link">mids</a></code></p>
+
+
+<p>(multiply imputed data set)</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -244,8 +298,25 @@ categorical and ordered categorical data. In addition, MICE can impute
 continuous two-level data and maintain consistency between imputations by
 means of passive imputation and post-processing. Many diagnostic plots are
 implemented to inspect the quality of the imputations. See the
-<code>mice::mice()</code> function and the vignettes on the
+<code><a href="https://amices.org/mice/reference/mice.html" class="external-link">mice::mice()</a></code> function and the vignettes on the
 <a href="https://amices.org/mice/" class="external-link"><code>{mice}</code></a> package website for details.</p>
+<p><code>future_mice()</code> mimics the <code><a href="https://amices.org/mice/reference/mice.html" class="external-link">mice::mice()</a></code> interface as closely as possible;
+however, some shared parameters have different defaults than their <code>{mice}</code>
+equivalents. Notably, the default <code>maxit</code> is much larger than in <code>{mice}</code>;
+this is because <code>maxit</code> is an upper bound in <code>future_mice()</code>, rather than an
+exact number of iterations, as in <code>mice()</code>. The default of <code>100</code> should be
+more than enough iterations for most problems; if you need more than <code>100</code>
+iterations for convergence, you may want to check your imputation model for
+circularity or other stability issues.</p>
+<p>Additionally, <code>future_mice()</code> provides <code>NULL</code> defaults for all unset
+arguments; this is a best practice in <code>R</code>. Because of this, passing <code>NULL</code>
+to any argument without an explicit default is the same as not passing that
+argument, which differs from the behavior of <code>mice()</code> in some instances.</p>
+<p>Finally, some output attributes are not identical to their equivalents in
+<code>mice()</code>. In particular, the <code>call</code> attribute contains the call to <code>future_mice()</code>,
+rather than a call to <code>mice()</code>. The <code>lastSeedValue</code> should be equivalent, but
+does not function identically in subsequent calls to <code>mice.mids()</code> and
+<code>future_mids()</code>.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -257,7 +328,7 @@ implemented to inspect the quality of the imputations. See the
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
     </footer></div>
