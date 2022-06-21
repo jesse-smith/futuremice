@@ -19,8 +19,10 @@ Imports:
     rngtools,
     rstan
 Suggests: 
+    bench,
     covr,
     devtools,
+    ranger,
     renv,
     testthat (>= 3.0.0),
     usethis
