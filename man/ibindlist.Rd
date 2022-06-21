@@ -28,7 +28,7 @@ object. The resulting number of imputed data sets is equal to the sum of the
 number of imputed data sets in each list element.
 }
 \details{
-The \code{call} and \code{seed} arguments are primarily used by
+The \code{call}, \code{seed}, and \code{last_seed_value} arguments are primarily used by
 \code{\link[futuremice:future_mice]{future_mice()}} and
 \code{\link[futuremice:future_mids]{future_mids()}}; they allow modification of the
 \code{mids} object to match the equivalent \code{\link[mice:mice]{mice::mice()}}
