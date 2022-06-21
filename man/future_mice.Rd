@@ -181,8 +181,10 @@ convergence using the R-hat (potential scale reduction factor) statistic
 computed by \code{\link[rstan:Rhat]{rstan::Rhat()}}; if the largest R-hat is
 less than \code{rhat_thresh} for \code{rhat_it} iterations, the function returns early
 (without completing \code{maxit} iterations). This can save a significant amount
-of computation and manual convergence checking. However, a "good" R-hat is
-not a substitute for assessing imputation quality.
+of computation and manual convergence checking, and it often works well in
+practice. However, a "good" R-hat is neither a necessary nor sufficient
+condition for MCMC convergence, nor is it a substitute for checking
+imputation quality once convergence is achieved.
 }
 \details{
 MICE is a method for creating multiple imputations (replacement values) for
