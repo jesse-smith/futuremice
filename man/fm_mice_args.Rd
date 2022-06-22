@@ -4,10 +4,10 @@
 \alias{fm_mice_args}
 \title{Combine Arguments in \code{future_mice()}}
 \usage{
-fm_mice_args(f_m, .args = caller_args(n = 2L))
+fm_mice_args(m, .args = fm_caller_args(n = 2L))
 }
 \arguments{
-\item{f_m}{The number of chains per \code{mice::mice()} call}
+\item{m}{The number of chains per \code{mice::mice()} call}
 
 \item{.args}{A named list of arguments from the \code{future_mice()} call}
 }
@@ -15,6 +15,7 @@ fm_mice_args(f_m, .args = caller_args(n = 2L))
 A list containing arguments to pass to \code{mice::mice()}
 }
 \description{
-Helper function to combine and parse named arguments + dots in \code{future_mice()}
+Helper function to combine and parse named arguments + dots in
+\code{future_mice()}
 }
 \keyword{internal}

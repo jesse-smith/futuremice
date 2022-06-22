@@ -1,3 +1,6 @@
+# Exports ----------------------------------------------------------------------
+
+
 #' Combine a List of \code{\link[mice]{mids}} Objects
 #'
 #' Combines a list of \code{\link[mice]{mids}} objects into a single `mids`
@@ -6,9 +9,9 @@
 #'
 #' The `call`, `seed`, and `last_seed_value` arguments are primarily used by
 #' \code{\link[futuremice:future_mice]{future_mice()}} and
-#' \code{\link[futuremice:future_mids]{future_mids()}}; they allow modification of the
-#' `mids` object to match the equivalent \code{\link[mice:mice]{mice::mice()}}
-#' output exactly.
+#' \code{\link[futuremice:future_mids]{future_mids()}}; they allow modification
+#' of the `mids` object to match the equivalent
+#' \code{\link[mice:mice]{mice::mice()}} output exactly.
 #'
 #' @param mids_list List of `mids` objects to combine
 #' @param call An optional call to use for the `call` attribute of the resulting
@@ -22,15 +25,23 @@
 #' @return A combined `mids` object
 #'
 #' @export
-ibindlist <- function(mids_list, call = NULL, seed = NULL, last_seed_value = NULL) {
+ibindlist <- function(
+  mids_list,
+  call = NULL,
+  seed = NULL,
+  last_seed_value = NULL
+) {
   # Reduce to single `mids` object
   mids <- purrr::reduce(mids_list, mice::ibind)
+
+  # Convert `m` to numeric
+  mids$m <- as.numeric(mids$m)
 
   # Set `ignore` attribute
   mids$ignore <- mids_list[[1L]]$ignore
 
   # Set `seed` attribute
-  if (!is.null(seed)) mids$seed <- mice_seed(seed)
+  if (!is.null(seed)) mids$seed <- fm_mice_seed(seed)
 
   # Set names of imputation data frames
   mids$imp <- purrr::map(
@@ -38,20 +49,29 @@ ibindlist <- function(mids_list, call = NULL, seed = NULL, last_seed_value = NUL
     fm_set_colnames,
     names = as.character(seq_len(mids$m))
   )
+  mids$imp <- purrr::map(
+    mids$imp,
+    ~ fm_set_rownames(.x, as.character(rownames(.x)))
+  )
 
   # Set `lastSeedValue` attribute
-  if (!is.null(last_seed_value)) mids$lastSeedValue <- last_seed_value
+  if (!is.null(last_seed_value)) {
+    mids$lastSeedValue <- fm_assert_vec_int(last_seed_value)
+  }
 
   # Set `call` attribute
   if (is.null(call)) call <- mids_list[[1L]]$call
   mids <- fm_set_call(mids, call = call)
 
   # Set `loggedEvents` attribute
-  mids <- fm_set_logged_events(mids, mids_list)
+  mids <- fm_ibind_logged_events(mids, mids_list)
 
   # Return
   mids
 }
+
+
+# Helpers ----------------------------------------------------------------------
 
 
 #' Helper Function for Setting `mids$call`
@@ -80,11 +100,11 @@ fm_set_call <- function(mids, call) {
   call_arg_nms <- call_arg_nms[nchar(call_arg_nms) > 0L]
   if ("m" %in% call_arg_nms) call$m <- mids$m
   if ("maxit" %in% call_arg_nms) call$maxit <- mids$maxit
-  if ("seed" %in% call_arg_nms && !is.null(seed)) call$seed <- mids$seed
+  if ("seed" %in% call_arg_nms) call$seed <- mids$seed
   # Set
   mids$call <- call
   # Return
-  call
+  mids
 }
 
 
@@ -97,7 +117,7 @@ fm_set_call <- function(mids, call) {
 #' @return `mids` with `loggedEvents` from `mids_list`
 #'
 #' @keywords internal
-fm_set_logged_events <- function(mids, mids_list) {
+fm_ibind_logged_events <- function(mids, mids_list) {
   # Combine loggedEvents from `mids_list`
   loggedEvents <- purrr::map_dfr(mids_list, ~ .x$loggedEvents, .id = "i")
   # Update if any exist
@@ -108,18 +128,4 @@ fm_set_logged_events <- function(mids, mids_list) {
   }
   # Return
   mids
-}
-
-
-#' Helper Function for Setting Column Names
-#'
-#' @param x An object to set column names for. Must have at least 2 dimensions.
-#' @param names A character vector of column names
-#'
-#' @return `x`, with (re-)named columns
-#'
-#' @keywords internal
-fm_set_colnames <- function(x, names) {
-  colnames(x) <- names
-  x
 }
