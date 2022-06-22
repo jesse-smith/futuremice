@@ -25,7 +25,28 @@
     <loc>https://jesse-smith.github.io/futuremice/index.html</loc>
   </url>
   <url>
+    <loc>https://jesse-smith.github.io/futuremice/reference/compare_mids.html</loc>
+  </url>
+  <url>
+    <loc>https://jesse-smith.github.io/futuremice/reference/fm_assert.html</loc>
+  </url>
+  <url>
+    <loc>https://jesse-smith.github.io/futuremice/reference/fm_call_ns_name.html</loc>
+  </url>
+  <url>
+    <loc>https://jesse-smith.github.io/futuremice/reference/fm_caller_args.html</loc>
+  </url>
+  <url>
     <loc>https://jesse-smith.github.io/futuremice/reference/fm_exit_msg.html</loc>
+  </url>
+  <url>
+    <loc>https://jesse-smith.github.io/futuremice/reference/fm_furrr_opts.html</loc>
+  </url>
+  <url>
+    <loc>https://jesse-smith.github.io/futuremice/reference/fm_ibind_logged_events.html</loc>
+  </url>
+  <url>
+    <loc>https://jesse-smith.github.io/futuremice/reference/fm_isplit_logged_events.html</loc>
   </url>
   <url>
     <loc>https://jesse-smith.github.io/futuremice/reference/fm_mice.html</loc>
@@ -34,7 +55,25 @@
     <loc>https://jesse-smith.github.io/futuremice/reference/fm_mice_args.html</loc>
   </url>
   <url>
+    <loc>https://jesse-smith.github.io/futuremice/reference/fm_mice_seed.html</loc>
+  </url>
+  <url>
     <loc>https://jesse-smith.github.io/futuremice/reference/fm_mids.html</loc>
+  </url>
+  <url>
+    <loc>https://jesse-smith.github.io/futuremice/reference/fm_parallel_params.html</loc>
+  </url>
+  <url>
+    <loc>https://jesse-smith.github.io/futuremice/reference/fm_prep_diagnostic_params.html</loc>
+  </url>
+  <url>
+    <loc>https://jesse-smith.github.io/futuremice/reference/fm_progressor.html</loc>
+  </url>
+  <url>
+    <loc>https://jesse-smith.github.io/futuremice/reference/fm_rhat_max_.html</loc>
+  </url>
+  <url>
+    <loc>https://jesse-smith.github.io/futuremice/reference/fm_rng_seed.html</loc>
   </url>
   <url>
     <loc>https://jesse-smith.github.io/futuremice/reference/fm_set_call.html</loc>
@@ -43,10 +82,10 @@
     <loc>https://jesse-smith.github.io/futuremice/reference/fm_set_colnames.html</loc>
   </url>
   <url>
-    <loc>https://jesse-smith.github.io/futuremice/reference/fm_set_logged_events.html</loc>
+    <loc>https://jesse-smith.github.io/futuremice/reference/future_mice.html</loc>
   </url>
   <url>
-    <loc>https://jesse-smith.github.io/futuremice/reference/future_mice.html</loc>
+    <loc>https://jesse-smith.github.io/futuremice/reference/future_mids.html</loc>
   </url>
   <url>
     <loc>https://jesse-smith.github.io/futuremice/reference/ibindlist.html</loc>
@@ -55,7 +94,7 @@
     <loc>https://jesse-smith.github.io/futuremice/reference/index.html</loc>
   </url>
   <url>
-    <loc>https://jesse-smith.github.io/futuremice/reference/prep_diagnostic_params.html</loc>
+    <loc>https://jesse-smith.github.io/futuremice/reference/isplit.html</loc>
   </url>
   <url>
     <loc>https://jesse-smith.github.io/futuremice/reference/rhat_max.html</loc>
