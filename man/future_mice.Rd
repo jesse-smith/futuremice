@@ -18,6 +18,7 @@ future_mice(
   post = NULL,
   defaultMethod = c("pmm", "logreg", "polyreg", "polr"),
   maxit = 50L,
+  quiet = FALSE,
   seed = NA,
   data.init = NULL,
   chunk_size = 1L,
@@ -213,8 +214,36 @@ to any argument without an explicit default is the same as not passing that
 argument, which differs from the behavior of \code{mice()} in some instances.
 
 Finally, some output attributes are not identical to their equivalents in
-\code{mice()}. In particular, the \code{call} attribute contains the call to \code{future_mice()},
-rather than a call to \code{mice()}. The \code{lastSeedValue} should be equivalent, but
-does not function identically in subsequent calls to \code{mice.mids()} and
-\code{future_mids()}.
+\code{mice()}. In particular, the \code{call} attribute contains the call to
+\code{future_mice()}, rather than a call to \code{mice()}. The \code{lastSeedValue} should
+be equivalent, but does not function identically in subsequent calls to
+\code{mice.mids()} and \code{future_mids()}.
+}
+\examples{
+# Run imputations in parallel (just two to avoid hogging resources)
+# Picking a number of workers that divides `m` evenly can help performance
+future::plan("multisession", workers = pmin(2L, future::availableCores()))
+
+# Use just like `mice::mice()` - examples from {mice} documentation
+# (`maxit` is small here to keep runtime short)
+imp <- future_mice(mice::nhanes, m = 4L, maxit = 5L)
+imp
+
+# List the actual imputations for BMI
+imp$imp$bmi
+
+# First completed data matrix
+mice::complete(imp)
+
+# Imputation on mixed data with a different method per column
+future_mice(
+  mice::nhanes2,
+  m = 4L,
+  method = c("sample", "pmm", "logreg", "norm"),
+  maxit = 5L
+)
+
+# Reset future plan
+future::plan("sequential")
+
 }

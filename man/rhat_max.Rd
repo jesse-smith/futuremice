@@ -4,16 +4,19 @@
 \alias{rhat_max}
 \title{Quick Max R-hat Calculation}
 \usage{
-rhat_max(data)
+rhat_max(mids, it = 1L)
 }
 \arguments{
-\item{data}{An object of class \code{mids} as created by \code{mice::mice()}}
+\item{mids}{A \code{mids} object as created by \code{mice::mice()}}
+
+\item{it}{The number of recent iterations for which R-hat should be
+calculated. If this is larger than the total number of iterations, it is
+truncated.}
 }
 \value{
 A scalar \code{double} containing the maximum R-hat statistic
 }
 \description{
 Calculates the largest R-hat statistic across all variables and chain
-statistics for the most recent iteration
+statistics for the \code{it} most recent iterations
 }
-\keyword{internal}
