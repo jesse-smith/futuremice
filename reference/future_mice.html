@@ -237,6 +237,10 @@ much larger than the <code>{mice}</code> default of <code>maxit = 5</code> but i
 if convergence is not achieved.</p></dd>
 
 
+<dt>quiet</dt>
+<dd><p>Should convergence messages and warning be suppressed?</p></dd>
+
+
 <dt>seed</dt>
 <dd><p>Seed for random number generation; either a scalar <code>integer</code>,
 <code>NA</code>, or <code>NULL</code>. This seed is not used directly in <code><a href="https://amices.org/mice/reference/mice.html" class="external-link">mice::mice()</a></code>; instead,
@@ -353,43 +357,43 @@ be equivalent, but does not function identically in subsequent calls to
 <span class="r-in"><span class="co"># List the actual imputations for BMI</span></span>
 <span class="r-in"><span class="va">imp</span><span class="op">$</span><span class="va">imp</span><span class="op">$</span><span class="va">bmi</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       1    2    3    4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  27.2 26.3 27.2 26.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  35.3 35.3 35.3 35.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  24.9 24.9 24.9 24.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  25.5 25.5 25.5 25.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 22.7 22.7 22.7 22.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11 35.3 35.3 35.3 35.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12 27.2 27.2 27.2 27.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16 22.7 22.7 22.7 35.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21 27.5 27.5 27.5 27.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  28.7 29.6 30.1 22.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  30.1 29.6 28.7 30.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  25.5 25.5 21.7 25.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  25.5 22.7 22.5 25.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 22.7 26.3 27.5 27.2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 27.2 22.7 28.7 27.2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12 26.3 26.3 22.7 27.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16 29.6 30.1 30.1 29.6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21 28.7 30.1 30.1 28.7</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># First completed data matrix</span></span>
 <span class="r-in"><span class="fu">mice</span><span class="fu">::</span><span class="fu"><a href="https://amices.org/mice/reference/complete.mids.html" class="external-link">complete</a></span><span class="op">(</span><span class="va">imp</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    age  bmi hyp chl</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    1 27.2   1 187</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    1 28.7   1 113</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2    2 22.7   1 187</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    1 35.3   1 187</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4    3 24.9   1 199</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    1 30.1   1 187</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    3 25.5   2 284</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5    1 20.4   1 113</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6    3 25.5   1 184</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7    1 22.5   1 118</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8    1 30.1   1 187</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9    2 22.0   1 238</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10   2 22.7   1 187</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11   1 35.3   1 206</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12   2 27.2   2 204</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11   1 27.2   1 187</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12   2 26.3   1 206</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 13   3 21.7   1 206</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 14   2 28.7   2 204</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 15   1 29.6   1 187</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16   1 22.7   1 187</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16   1 29.6   1 238</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 17   3 27.2   2 284</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 18   2 26.3   2 199</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 19   1 35.3   1 218</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20   3 25.5   2 284</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21   1 27.5   1 118</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20   3 25.5   2 218</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21   1 28.7   1 118</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 22   1 33.2   1 229</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 23   1 27.5   1 131</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24   3 24.9   1 204</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24   3 24.9   1 199</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 25   2 27.4   1 186</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Imputation on mixed data with a different method per column</span></span>
@@ -400,7 +404,7 @@ be equivalent, but does not function identically in subsequent calls to
 <span class="r-in">  maxit <span class="op">=</span> <span class="fl">5L</span></span>
 <span class="r-in"><span class="op">)</span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Sampling did not converge in 5 iterations</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> R-hat: NA/2.498/1.903 &lt; 1.05</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> R-hat: NA/2.498/2.498 &lt; 1.05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Class: mids</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of multiple imputations:  4 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Imputation methods:</span>
