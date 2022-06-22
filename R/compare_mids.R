@@ -178,7 +178,26 @@ compare_mids <- function(
 }
 
 
-#' Detect
+#' Detect Namespace of Function Call
+#'
+#' Tries to detect the namespace of a call automatically. It will first try
+#' to extract the namespace using `rlang::call_ns()`; if this fails, it will
+#' use the supplied `env` (`rlang::caller_env()`, by default) to attempt to
+#' extract the namespace from the call's function. The latter method is similar
+#' to `rlang::call_fn()`, which is now deprecated due to inconsistent results.
+#' It is not yet clear whether this works well enough to retain the behavior in
+#' practice.
+#'
+#' @param call A `call` object to extract a `namespace` from
+#' @param env The environment to use to lookup the function definition from
+#'   `call` if the call is not explicitly namespaced
+#' @param error Should the function throw an error if `call` is not a `call`
+#'   object?
+#'
+#' @return The name of the associated namespace, if detected; if not, returns
+#'   `NULL`
+#'
+#' @keywords internal
 fm_call_ns_name <- function(call, env = rlang::caller_env(), error = TRUE) {
   # Check arguments
   fm_assert_bool(error)

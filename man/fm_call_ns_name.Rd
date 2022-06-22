@@ -2,10 +2,30 @@
 % Please edit documentation in R/compare_mids.R
 \name{fm_call_ns_name}
 \alias{fm_call_ns_name}
-\title{Detect}
+\title{Detect Namespace of Function Call}
 \usage{
 fm_call_ns_name(call, env = rlang::caller_env(), error = TRUE)
 }
-\description{
-Detect
+\arguments{
+\item{call}{A \code{call} object to extract a \code{namespace} from}
+
+\item{env}{The environment to use to lookup the function definition from
+\code{call} if the call is not explicitly namespaced}
+
+\item{error}{Should the function throw an error if \code{call} is not a \code{call}
+object?}
 }
+\value{
+The name of the associated namespace, if detected; if not, returns
+\code{NULL}
+}
+\description{
+Tries to detect the namespace of a call automatically. It will first try
+to extract the namespace using \code{rlang::call_ns()}; if this fails, it will
+use the supplied \code{env} (\code{rlang::caller_env()}, by default) to attempt to
+extract the namespace from the call's function. The latter method is similar
+to \code{rlang::call_fn()}, which is now deprecated due to inconsistent results.
+It is not yet clear whether this works well enough to retain the behavior in
+practice.
+}
+\keyword{internal}
