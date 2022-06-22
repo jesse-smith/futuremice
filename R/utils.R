@@ -138,12 +138,20 @@ fm_rng_seed <- function(seed) {
 }
 
 
-#' Helper Function for Setting Column Names
+#' Helper Function for Setting Row and Column Names
 #'
-#' @param x An object to set column names for. Must have at least 2 dimensions.
-#' @param names A character vector of column names
+#' @param x An object to set names for. Must have at least 2 dimensions to use
+#'   `fm_set_colnames()`.
+#' @param names A `character` vector of row or column names
 #'
-#' @return `x`, with (re-)named columns
+#' @return `x`, with (re-)named rows or columns
+#'
+#' @keywords internal
+#'
+#' @name fm_set_names
+NULL
+
+#' @rdname fm_set_names
 #'
 #' @keywords internal
 fm_set_colnames <- function(x, names) {
@@ -151,7 +159,9 @@ fm_set_colnames <- function(x, names) {
   x
 }
 
-
+#' @rdname fm_set_names
+#'
+#' @keywords internal
 fm_set_rownames <- function(x, names) {
   rownames(x) <- names
   x
