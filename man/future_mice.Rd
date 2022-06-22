@@ -135,6 +135,8 @@ much larger than the \code{{mice}} default of \code{maxit = 5} but is large enou
 "just work" in many situations without potentially running for days on end
 if convergence is not achieved.}
 
+\item{quiet}{Should convergence messages and warning be suppressed?}
+
 \item{seed}{Seed for random number generation; either a scalar \code{integer},
 \code{NA}, or \code{NULL}. This seed is not used directly in \code{mice::mice()}; instead,
 it is used to generate separate RNG streams for each \code{future} using the

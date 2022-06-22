@@ -18,9 +18,9 @@ compare_mids(
 \arguments{
 \item{x, y}{\code{mids} objects to compare, as created by
 \code{\link[mice:mice]{mice::mice()}},
-\code{\link[future_mice]{future_mice()}},
+\code{\link[futuremice:future_mice]{future_mice()}},
 \code{\link[mice:mice.mids]{mice::mice.mids()}},
-\code{\link[future_mids]{future_mids()}}, etc.}
+\code{\link[futuremice:future_mids]{future_mids()}}, etc.}
 
 \item{show_msg}{Should the message displaying element-wise comparisons be
 shown?}

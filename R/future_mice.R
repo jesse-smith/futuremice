@@ -53,6 +53,7 @@
 #'   much larger than the `{mice}` default of `maxit = 5` but is large enough to
 #'   "just work" in many situations without potentially running for days on end
 #'   if convergence is not achieved.
+#' @param quiet Should convergence messages and warning be suppressed?
 #' @param chunk_size The average number of chains per future. Differs from the
 #'   usual `{future}` parameter in that multiple chains ("chunks") will be
 #'   evaluated in a single call to `mice::mice()` if there is an integer `i`

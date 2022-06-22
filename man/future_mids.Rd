@@ -28,6 +28,8 @@ are generated according to the model in \code{obj}.}
 
 \item{maxit}{The number of additional Gibbs sampling iterations.}
 
+\item{quiet}{Should convergence messages and warning be suppressed?}
+
 \item{chunk_size}{The average number of chains per future. Differs from the
 usual \code{{future}} parameter in that multiple chains ("chunks") will be
 evaluated in a single call to \code{mice::mice()} if there is an integer \code{i}

@@ -25,9 +25,9 @@
 #'
 #' @param x,y `mids` objects to compare, as created by
 #'   \code{\link[mice:mice]{mice::mice()}},
-#'   \code{\link[future_mice]{future_mice()}},
+#'   \code{\link[futuremice:future_mice]{future_mice()}},
 #'   \code{\link[mice:mice.mids]{mice::mice.mids()}},
-#'   \code{\link[future_mids]{future_mids()}}, etc.
+#'   \code{\link[futuremice:future_mids]{future_mids()}}, etc.
 #' @param show_msg Should the message displaying element-wise comparisons be
 #'   shown?
 #' @param show_rtn Should the return value be visible? The default is the

@@ -12,17 +12,19 @@ URL: https://github.com/jesse-smith/futuremice,
 BugReports: https://github.com/jesse-smith/futuremice/issues
 Imports: 
     furrr,
-    future,
     mice,
     progressr,
     purrr,
     rlang,
     rngtools,
-    rstan
+    rstan,
+    vctrs,
+    withr
 Suggests: 
     bench,
     covr,
     devtools,
+    future,
     ranger,
     renv,
     testthat (>= 3.0.0),
