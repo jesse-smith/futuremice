@@ -11,6 +11,8 @@
 #'   truncated.
 #'
 #' @return A scalar `double` containing the maximum R-hat statistic
+#'
+#' @export
 rhat_max <- function(mids, it = 1L) {
   it <- fm_assert_count(it)
   if (it == 0L) return(numeric())
