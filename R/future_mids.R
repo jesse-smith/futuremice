@@ -44,7 +44,7 @@
 future_mids <- function(
   obj,
   newdata = NULL,
-  maxit = 1L,
+  maxit = 100L,
   quiet = FALSE,
   chunk_size = 1L,
   rhat_thresh = 1.05,
