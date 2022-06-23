@@ -53,7 +53,7 @@ fm_assert_bool <- function(x, arg_nm = rlang::caller_arg(x)) {
 #'
 #' @keywords internal
 fm_assert_count <- function(x, arg_nm = rlang::caller_arg(x)) {
-  if (rlang::is_scalar_integerish(x, finite = TRUE) && x >= 0L) {
+  if (fm_is_scalar_int(x) && x >= 0L) {
     invisible(as.integer(x))
   } else {
     rlang::abort(paste0("`", arg_nm, "` must be an integer >= 0"))
@@ -67,7 +67,7 @@ fm_assert_count <- function(x, arg_nm = rlang::caller_arg(x)) {
 fm_assert_seed <- function(x, arg_nm = rlang::caller_arg(x)) {
   if (is.null(x)) {
     invisible(x)
-  } else if (rlang::is_scalar_integerish(x, finite = TRUE) || is.na(x)) {
+  } else if (NROW(x) > 0L && (fm_is_scalar_int(x) || is.na(x)[[1L]])) {
     invisible(as.integer(x))
   } else {
     rlang::abort(paste0("`", arg_nm, "` must be an integer, `NA`, or `NULL`"))
@@ -79,7 +79,8 @@ fm_assert_seed <- function(x, arg_nm = rlang::caller_arg(x)) {
 #'
 #' @keywords internal
 fm_assert_num <- function(x, arg_nm = rlang::caller_arg(x)) {
-  if (is.numeric(x) && NROW(x) == 1L && !(is.na(x) || is.infinite(x))) {
+  is_num <- rlang::is_bare_numeric(x)
+  if (is_num && NROW(x) == 1L && !(is.na(x) || is.infinite(x))) {
     invisible(as.double(x))
   } else {
     rlang::abort(paste0("`", arg_nm, "must be a finite, non-missing number"))
@@ -91,11 +92,34 @@ fm_assert_num <- function(x, arg_nm = rlang::caller_arg(x)) {
 #'
 #' @keywords internal
 fm_assert_vec_int <- function(x, arg_nm = rlang::caller_arg(x)) {
-  if (rlang::is_integerish(x, finite = TRUE)) {
+  is_int <- rlang::is_bare_numeric(x) && rlang::is_integerish(x, finite = TRUE)
+  if (is_int && NROW(x) > 0L) {
     invisible(as.integer(x))
   } else {
     rlang::abort(
-      paste0("`", arg_nm, "` must be a non-missing, finite, integerish vector")
+      paste0(
+        "`", arg_nm,
+        "` must be a finite, non-missing, integerish vector ",
+        "with `length(", arg_nm, ") > 0`"
+      )
     )
   }
+}
+
+
+#' Is Object a Scalar Integer-ish Value
+#'
+#' Always returns `TRUE` or `FALSE` - never errors
+#'
+#' @param x Object to test
+#'
+#' @return `TRUE` or `FALSE`
+#'
+#' @keywords internal
+fm_is_scalar_int <- function(x) {
+  is_int <- tryCatch(
+    rlang::is_bare_numeric(x) && rlang::is_scalar_integerish(x, finite = TRUE),
+    error = function(e) FALSE
+  )
+  tryCatch(rlang::is_true(is_int), error = function(e) FALSE)
 }
