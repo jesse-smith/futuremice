@@ -42,6 +42,10 @@
 #'   ignored in equality comparison? These elements do not usually impact
 #'   results if all other elements are identical and can thus usually be safely
 #'   ignored.
+#'
+#' @return `TRUE` or `FALSE`
+#'
+#' @export
 compare_mids <- function(
   x,
   y,

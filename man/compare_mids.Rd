@@ -40,6 +40,9 @@ ignored in equality comparison? These elements do not usually impact
 results if all other elements are identical and can thus usually be safely
 ignored.}
 }
+\value{
+\code{TRUE} or \code{FALSE}
+}
 \description{
 \code{compare_mids()} is a combination of
 \code{\link[base:all.equal]{all.equal()}} and
