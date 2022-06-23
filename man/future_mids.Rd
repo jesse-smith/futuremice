@@ -63,3 +63,26 @@ the R-hat statistic
 (see the \code{\link[futuremice:future_mice]{future_mice()}} documentation
 for details).
 }
+\examples{
+
+# Run in parallel (just two cores to avoid hogging resources)
+# Picking a number of workers that divides `m` evenly can help performance
+future::plan("multisession", workers = pmin(2L, future::availableCores()))
+
+# Run `mice::mice()`
+# `m` and `maxit` are small here to keep runtime short
+mids <- mice::mice(mice::nhanes, m = 2L, maxit = 1L)
+
+# Run for additional iteration
+mids <- future_mids(mids, maxit = 1L)
+
+\dontrun{
+# Run until convergence
+mids <- future_mids(mids, maxit = 100L)
+mids
+}
+
+# Reset future plan
+future::plan("sequential")
+
+}

@@ -18,6 +18,14 @@
 #'
 #' @return A `list` of `mids` objects
 #'
+#' @examples
+#' # Create `mids` object
+#' mids <- mice::mice(mice::nhanes, m = 2L, maxit = 1L)
+#'
+#' # Split into two - 1 imputation per object
+#' mids_list <- isplit(mids)
+#' mids_list
+#'
 #' @export
 isplit <- function(mids, chunk_size = 1L) {
   # Check arguments

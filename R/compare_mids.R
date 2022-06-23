@@ -45,6 +45,11 @@
 #'
 #' @return `TRUE` or `FALSE`
 #'
+#' @examples
+#' m_mids <- mice::mice(mice::nhanes, m = 1L, maxit = 1L)
+#' f_mids <- future_mice(mice::nhanes, m = 1L, maxit = 1L)
+#' compare_mids(m_mids, f_mids)
+#'
 #' @export
 compare_mids <- function(
   x,

@@ -12,6 +12,14 @@
 #'
 #' @return A scalar `double` containing the maximum R-hat statistic
 #'
+#' @examples
+#' # Create `mids` object
+#' mids <- mice::mice(mice::nhanes)
+#'
+#' # Get max R-hat for most recent 2 iterations
+#' rhat <- rhat_max(mids, it = 2L)
+#' rhat
+#'
 #' @export
 rhat_max <- function(mids, it = 1L) {
   it <- fm_assert_count(it)

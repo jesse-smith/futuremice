@@ -79,23 +79,20 @@
 #' future::plan("multisession", workers = pmin(2L, future::availableCores()))
 #'
 #' # Use just like `mice::mice()` - examples from {mice} documentation
-#' # (`maxit` is small here to keep runtime short)
-#' imp <- future_mice(mice::nhanes, m = 4L, maxit = 5L)
-#' imp
+#' mids <- future_mice(mice::nhanes, m = 2L, maxit = 1L)
+#'
+#' \dontrun{
+#' # Run until convergence (`maxit = 100L` by default)
+#' mids <- future_mice(mice::nhanes, m = 2L)
+#' }
+#'
+#' mids
 #'
 #' # List the actual imputations for BMI
-#' imp$imp$bmi
+#' mids$imp$bmi
 #'
 #' # First completed data matrix
-#' mice::complete(imp)
-#'
-#' # Imputation on mixed data with a different method per column
-#' future_mice(
-#'   mice::nhanes2,
-#'   m = 4L,
-#'   method = c("sample", "pmm", "logreg", "norm"),
-#'   maxit = 5L
-#' )
+#' mice::complete(mids)
 #'
 #' # Reset future plan
 #' future::plan("sequential")

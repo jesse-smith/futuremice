@@ -27,3 +27,12 @@ The resulting number of objects is specified implicitly through \code{mids$m} an
 \code{chunk_size}.
 }
 }
+\examples{
+# Create `mids` object
+mids <- mice::mice(mice::nhanes, m = 2L, maxit = 1L)
+
+# Split into two - 1 imputation per object
+mids_list <- isplit(mids)
+mids_list
+
+}

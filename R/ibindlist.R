@@ -24,6 +24,16 @@
 #'
 #' @return A combined `mids` object
 #'
+#' @examples
+#' # Create individual `mids` objects
+#' mids1 <- mice::mice(mice::nhanes, m = 1L, maxit = 1L, seed = 1L)
+#' mids2 <- mice::mice(mice::nhanes, m = 2L, maxit = 1L, seed = 2L)
+#' mids3 <- mice::mice(mice::nhanes, m = 3L, maxit = 1L, seed = 3L)
+#'
+#' # Combine imputations
+#' mids6 <- ibindlist(list(mids1, mids2, mids3))
+#' mids6
+#'
 #' @export
 ibindlist <- function(
   mids_list,
