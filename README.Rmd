@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN status](https://www.r-pkg.org/badges/version/futuremice)](https://CRAN.R-project.org/package=futuremice)
 [![Codecov test coverage](https://codecov.io/gh/jesse-smith/futuremice/branch/master/graph/badge.svg)](https://app.codecov.io/gh/jesse-smith/futuremice?branch=master)
-[![R-CMD-check](https://github.com/jesse-smith/futuremice/workflows/R-CMD-check/badge.svg)](https://github.com/jesse-smith/futuremice/actions)
+[![R-CMD-check](https://github.com/jesse-smith/futuremice/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jesse-smith/futuremice/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 `{futuremice}` parallelizes the main functionality of the `{mice}` package using
@@ -39,12 +39,89 @@ if (!"devtools" %in% installed.packages()) install.packages("devtools")
 devtools::install_github("jesse-smith/futuremice")
 ```
 
-## Example
+## Minimal Example
 
-This is a basic example which shows you how to solve a common problem:
+Let's run the example from the `{mice}` package documentation, but in parallel.
 
-```{r example}
+```{r example-init}
+# Load {futuremice}
 library(futuremice)
+
+# Evaluate futures in parallel - max of two workers to avoid hogging resources
+future::plan("multisession", workers = pmin(2L, future::availableCores()))
+
+# Use {progress} package for progress bar - shows diagnostics in real time
+progressr::handlers("progress")
+```
+
+`{futuremice}` uses the `{future}` package to run imputations in parallel. By
+default, `{future}` will run a `"sequential"` plan, which is no different
+(and a little less efficient) than calling `mice::mice()`. To take advantage of
+multiple CPUs, we can use a `"multisession"` plan (see the [vignette](https://future.futureverse.org/articles/future-1-overview.html#controlling-how-futures-are-resolved)
+from the `{future}` package for details on different plans). `future_mice()` also
+provides a progress bar and real-time convergence diagnostics using `{progressr}`;
+however, the default progress bar does not show messages, so we'll use the `progress`
+handler to see our diagnostics.
+
+Now, let's impute our missing data:
+
+```{r example-impute}
+# Impute the missing values using defaults
+# Use `progressr::with_progress()` to show the progress bar
+mids <- progressr::with_progress(future_mice(mice::nhanes))
+
+# Or start with `mice::mice()` and finish with `future_mids()`
+mids2 <- mice::mice(mice::nhanes, maxit = 1L, printFlag = FALSE)
+mids2 <- progressr::with_progress(future_mids(mids2, maxit = 100L))
+
+# View the resulting `mids` (*m*ultiply *i*mputed *d*ata *s*et) object
+mids
+
+# List the actual imputations for BMI
+mids$imp$bmi
+```
+
+Note that `future_mice()` will often run longer than `mice::mice()`'s default of
+`5` imputations before convergence is confidently achieved. Also note that we
+will only get a progress bar if we wrap the call in `with_progress()`; this is
+a feature of the `{progressr}` package.
+
+We can use the resulting `mids` object just like the result of a call to
+`mice::mice()`. Let's inspect the quality of the imputations:
+
+```{r example-inspect}
+# Inspect quality of imputations
+mice::stripplot(mids, chl, pch = 19, xlab = "Imputation number")
+```
+
+In general, we would like the imputations to be plausible, i.e., values that
+could have been observed if they had not been missing. Now let's fit a model to
+the imputed data set and pool the results:
+
+```{r example-fit}
+# Fit complete-data model
+fit <- with(mids, lm(chl ~ age + bmi))
+
+# Pool and summarize the results
+summary(mice::pool(fit))
+```
+
+The complete-data model is fit to each imputed data set, and the results are
+combined to arrive at estimates that properly account for the missing data.
+
+We can also compare two `mids` objects using `compare_mids()`:
+```{r example-compare}
+compare_mids(mids, mids2, ignore_rng = TRUE)
+```
+
+This will show us where differences occur between the two objects
+(if there are any). We'll ignore attributes that depend on the RNG state because
+evaluating imputations in parallel requires a different kind of random number
+generation than evaluating sequentially, as we did in the first iteration of
+`mice::mice()`.
+
+```{r reset-plan, include=FALSE}
+future::plan("sequential")
 ```
 
 ## Code of Conduct

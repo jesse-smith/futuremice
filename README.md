@@ -11,7 +11,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 status](https://www.r-pkg.org/badges/version/futuremice)](https://CRAN.R-project.org/package=futuremice)
 [![Codecov test
 coverage](https://codecov.io/gh/jesse-smith/futuremice/branch/master/graph/badge.svg)](https://app.codecov.io/gh/jesse-smith/futuremice?branch=master)
-[![R-CMD-check](https://github.com/jesse-smith/futuremice/workflows/R-CMD-check/badge.svg)](https://github.com/jesse-smith/futuremice/actions)
+[![R-CMD-check](https://github.com/jesse-smith/futuremice/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jesse-smith/futuremice/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 `{futuremice}` parallelizes the main functionality of the `{mice}`
@@ -31,13 +31,111 @@ if (!"devtools" %in% installed.packages()) install.packages("devtools")
 devtools::install_github("jesse-smith/futuremice")
 ```
 
-## Example
+## Minimal Example
 
-This is a basic example which shows you how to solve a common problem:
+Let’s run the example from the `{mice}` package documentation, but in
+parallel.
 
 ``` r
+# Load {futuremice}
 library(futuremice)
+
+# Evaluate futures in parallel - max of two workers to avoid hogging resources
+future::plan("multisession", workers = pmin(2L, future::availableCores()))
+
+# Use {progress} package for progress bar - shows diagnostics in real time
+progressr::handlers("progress")
 ```
+
+`{futuremice}` uses the `{future}` package to run imputations in
+parallel. By default, `{future}` will run a `"sequential"` plan, which
+is no different (and a little less efficient) than calling
+`mice::mice()`. To take advantage of multiple CPUs, we can use a
+`"multisession"` plan (see the
+[vignette](https://future.futureverse.org/articles/future-1-overview.html#controlling-how-futures-are-resolved)
+from the `{future}` package for details on different plans).
+`future_mice()` also provides a progress bar and real-time convergence
+diagnostics using `{progressr}`; however, the default progress bar does
+not show messages, so we’ll use the `progress` handler to see our
+diagnostics.
+
+Now, let’s impute our missing data:
+
+``` r
+# Impute the missing values using defaults
+# Use `progressr::with_progress()` to show the progress bar
+mids <- progressr::with_progress(future_mice(mice::nhanes))
+#> Converged in 36 iterations
+#> R-hat: 1.041/1.041/1.025 < 1.05
+
+# Or start with `mice::mice()` and finish with `future_mids()`
+mids <- mice::mice(mice::nhanes, maxit = 1L, printFlag = FALSE)
+mids <- progressr::with_progress(future_mids(mids, maxit = 100L))
+#> Converged in 40 iterations
+#> R-hat: 1.036/1.022/1.019 < 1.05
+
+# View the resulting `mids` (*m*ultiply *i*mputed *d*ata *s*et) object
+mids
+#> Class: mids
+#> Number of multiple imputations:  5 
+#> Imputation methods:
+#>   age   bmi   hyp   chl 
+#>    "" "pmm" "pmm" "pmm" 
+#> PredictorMatrix:
+#>     age bmi hyp chl
+#> age   0   1   1   1
+#> bmi   1   0   1   1
+#> hyp   1   1   0   1
+#> chl   1   1   1   0
+
+# List the actual imputations for BMI
+mids$imp$bmi
+#>       1    2    3    4    5
+#> 1  27.4 27.4 27.4 27.4 27.4
+#> 3  30.1 30.1 30.1 30.1 30.1
+#> 4  22.5 22.5 22.5 22.5 22.5
+#> 6  20.4 20.4 20.4 20.4 20.4
+#> 10 28.7 28.7 28.7 28.7 28.7
+#> 11 20.4 20.4 20.4 20.4 20.4
+#> 12 22.5 22.5 22.5 22.5 22.5
+#> 16 33.2 33.2 33.2 33.2 33.2
+#> 21 20.4 20.4 20.4 20.4 20.4
+```
+
+Note that `future_mice()` will often run longer than `mice::mice()`’s
+default of `5` imputations before convergence is confidently achieved.
+Also note that we will only get a progress bar if we wrap the call in
+`with_progress()`; this is a feature of the `{progressr}` package.
+
+We can use the resulting `mids` object just like the result of a call to
+`mice::mice()`. Let’s inspect the quality of the imputations:
+
+``` r
+# Inspect quality of imputations
+mice::stripplot(mids, chl, pch = 19, xlab = "Imputation number")
+```
+
+<img src="man/figures/README-example-inspect-1.png" width="100%" />
+
+In general, we would like the imputations to be plausible, i.e., values
+that could have been observed if they had not been missing. Now let’s
+fit a model to the imputed data set and pool the results:
+
+``` r
+# Fit complete-data model
+fit <- with(mids, lm(chl ~ age + bmi))
+
+# Pool and summarize the results
+summary(mice::pool(fit))
+#>          term   estimate std.error statistic       df      p.value
+#> 1 (Intercept) -58.844546 45.006173 -1.307477 20.23797 2.057104e-01
+#> 2         age  38.856726  7.735480  5.023182 20.23797 6.300684e-05
+#> 3         bmi   6.994186  1.455035  4.806886 20.23797 1.040677e-04
+```
+
+The complete-data model is fit to each imputed data set, and the results
+are combined to arrive at estimates that properly account for the
+missing data.
 
 ## Code of Conduct
 
