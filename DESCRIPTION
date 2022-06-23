@@ -1,6 +1,6 @@
 Package: futuremice
 Title: A Future for MICE
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Authors@R: 
     person("Jesse", "Smith", , "jesse.smith@stjude.org", role = c("aut", "cre"))
 Description: futuremice provides parallelized variants of `mice::mice()`
