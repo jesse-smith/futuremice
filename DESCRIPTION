@@ -26,7 +26,6 @@ Suggests:
     devtools,
     fledge,
     future,
-    ranger,
     renv,
     testthat (>= 3.0.0),
     usethis
