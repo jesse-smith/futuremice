@@ -17,7 +17,7 @@ future_mice(
   blots = NULL,
   post = NULL,
   defaultMethod = c("pmm", "logreg", "polyreg", "polr"),
-  maxit = 50L,
+  maxit = 100L,
   quiet = FALSE,
   seed = NA,
   data.init = NULL,
