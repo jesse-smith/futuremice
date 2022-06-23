@@ -54,7 +54,7 @@ fm_rhat_max_ <- function(params, iters = NULL) {
   # Calculate R-hat for each variable and parameter, then get max
   if (is.null(iters)) iters <- seq_len(NROW(params$mean[[1L]]))
   rhat_max <- suppressWarnings(max(
-    purrr::map_dbl(c(params$mean, params$var), ~ rstan::Rhat(.x[iters])),
+    purrr::map_dbl(c(params$mean, params$var), ~ rstan_rhat(.x[iters])),
     na.rm = TRUE
   ))
   # Replace infinite value w/ NA
@@ -90,4 +90,79 @@ fm_prep_diagnostic_params <- function(mids) {
   param_var  <- purrr::map(seq_n, ~ chain_var[, , .x])
 
   list(mean = param_mean, var = param_var)
+}
+
+
+#' Re-Implement `rstan::Rhat()`
+#'
+#' Internal implementation of `rstan::Rhat()` to avoid unnecessary dependency.
+#'
+#' @param params A 2D matrix or array with one row per iteration and one column
+#'   per chain. The cells are realized draws for a particular parameter or
+#'   function of parameters.
+#' @param x Vector, matrix, or array to scale
+#'
+#' @return `rstan_rhat()` returns a scalar `double` that is the max of the bulk
+#'   and tail (folded) R-hat statistic for `params`. `rstan_rhat_()` returns a
+#'   scalar `double` R-hat. `rstan_split_chains()` returns an array with each
+#'   column split into two columns (top and bottom half). `rstan_z_scale()`
+#'   returns the scaled vector/matrix/array.
+#'
+#' @keywords internal
+rstan_rhat <- function(params) {
+  bulk_rhat <- rstan_rhat_(rstan_z_scale(rstan_split_chains(params)))
+  params_folded <- abs(params - stats::median(params))
+  tail_rhat <- rstan_rhat_(rstan_z_scale(rstan_split_chains(params_folded)))
+  max(bulk_rhat, tail_rhat)
+}
+
+
+#' @rdname rstan_rhat
+#'
+#' @keywords internal
+rstan_rhat_ <- function(params) {
+  if (anyNA(params) || rstan_is_constant(params)) return(NA)
+  if (any(!is.finite(params))) return(NaN)
+
+  if (is.vector(params)) dim(params) <- c(length(params), 1L)
+
+  n_samples <- NROW(params)
+  chains <- seq_len(NCOL(params))
+  chain_mean <- purrr::map_dbl(chains, ~ mean(params[, .x]))
+  chain_var  <- purrr::map_dbl(chains, ~ stats::var(params[, .x]))
+  var_between <- n_samples * stats::var(chain_mean)
+  var_within <- mean(chain_var)
+  sqrt((var_between / var_within + n_samples - 1) / n_samples)
+}
+
+
+#' @rdname rstan_rhat
+#'
+#' @keywords internal
+rstan_split_chains <- function(params) {
+  if (is.vector(params)) dim(params) <- c(length(params), 1L)
+  niter <- NROW(params)
+  if (niter == 1L) return(params)
+  half <- niter / 2L
+  cbind(params[1L:floor(half),], params[ceiling(half + 1L):niter,])
+}
+
+
+#' @rdname rstan_rhat
+#'
+#' @keywords internal
+rstan_z_scale <- function(x) {
+  r <- rank(x, ties.method = "average")
+  z <- stats::qnorm((r - 0.5) / length(x))
+  z[is.na(x)] <- NA_real_
+  if (!is.null(dim(x))) z <- array(z, dim = dim(x), dimnames = dimnames(x))
+  z
+}
+
+
+#' @rdname rstan_rhat
+#'
+#' @keywords internal
+rstan_is_constant <- function(x, tol = .Machine$double.eps) {
+  abs(max(x) - min(x)) < tol
 }

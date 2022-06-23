@@ -17,7 +17,6 @@ Imports:
     purrr,
     rlang,
     rngtools,
-    rstan,
     vctrs,
     withr
 Suggests: 
