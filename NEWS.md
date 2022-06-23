@@ -2,12 +2,6 @@
 
 # futuremice 0.0.0.9002
 
-- Change default `maxit` in `future_mice()` from `50` to `100`
-- Change default `maxit` in `future_mids()` from `1` to `100`
-
-
-# futuremice 0.0.0.9001
-
 * Change default `maxit` in `future_mice()` from `50` to `100`
 * Change default `maxit` in `future_mids()` from `1` to `100`
 
