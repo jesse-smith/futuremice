@@ -18,7 +18,7 @@ for details)."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/li
     
     <a class="navbar-brand me-2" href="../index.html">futuremice</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9001</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,6 +28,9 @@ for details)."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/li
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
@@ -63,7 +66,7 @@ for details).</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">future_mids</span><span class="op">(</span>
   <span class="va">obj</span>,
   newdata <span class="op">=</span> <span class="cn">NULL</span>,
-  maxit <span class="op">=</span> <span class="fl">1L</span>,
+  maxit <span class="op">=</span> <span class="fl">100L</span>,
   quiet <span class="op">=</span> <span class="cn">FALSE</span>,
   chunk_size <span class="op">=</span> <span class="fl">1L</span>,
   rhat_thresh <span class="op">=</span> <span class="fl">1.05</span>,
@@ -140,6 +143,37 @@ functions.</p></dd>
 <p>(multiply imputed data set)</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
+<span class="r-in"><span class="co"># Run in parallel (just two cores to avoid hogging resources)</span></span>
+<span class="r-in"><span class="co"># Picking a number of workers that divides `m` evenly can help performance</span></span>
+<span class="r-in"><span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="st">"multisession"</span>, workers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">2L</span>, <span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/re-exports.html" class="external-link">availableCores</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># Run `mice::mice()`</span></span>
+<span class="r-in"><span class="co"># `m` and `maxit` are small here to keep runtime short</span></span>
+<span class="r-in"><span class="va">mids</span> <span class="op">&lt;-</span> <span class="fu">mice</span><span class="fu">::</span><span class="fu"><a href="https://amices.org/mice/reference/mice.html" class="external-link">mice</a></span><span class="op">(</span><span class="fu">mice</span><span class="fu">::</span><span class="va"><a href="https://amices.org/mice/reference/nhanes.html" class="external-link">nhanes</a></span>, m <span class="op">=</span> <span class="fl">2L</span>, maxit <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  iter imp variable</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1   1  bmi  hyp  chl</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1   2  bmi  hyp  chl</span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># Run for additional iteration</span></span>
+<span class="r-in"><span class="va">mids</span> <span class="op">&lt;-</span> <span class="fu">future_mids</span><span class="op">(</span><span class="va">mids</span>, maxit <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Sampling did not converge in 2 iterations</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> R-hat: NA/NA &lt; 1.05</span>
+<span class="r-in"></span>
+<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="co"># Run until convergence</span></span>
+<span class="r-in"><span class="va">mids</span> <span class="op">&lt;-</span> <span class="fu">future_mids</span><span class="op">(</span><span class="va">mids</span>, maxit <span class="op">=</span> <span class="fl">100L</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">mids</span></span>
+<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># Reset future plan</span></span>
+<span class="r-in"><span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="st">"sequential"</span><span class="op">)</span></span>
+<span class="r-in"></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
@@ -149,7 +183,7 @@ functions.</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer></div>

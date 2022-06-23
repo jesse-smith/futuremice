@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="index.html">futuremice</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9001</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,6 +20,9 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item">
   <a class="nav-link" href="reference/index.html">Reference</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="news/index.html">Changelog</a>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
@@ -42,7 +45,7 @@
     </div>
 
 <div id="contributing-to-futuremice" class="section level1">
-<p>This outlines how to propose a change to futuremice. For more detailed info about contributing to this, and other tidyverse packages, please see the <a href="https://rstd.io/tidy-contrib" class="external-link"><strong>development contributing guide</strong></a>.</p>
+<p>This outlines how to propose a change to <a href="https://github.com/jesse-smith/futuremice" class="external-link">futuremice</a>. For more detailed info about contributing to this package, please see the <a href="https://rstd.io/tidy-contrib" class="external-link"><strong>development contributing guide</strong></a>. Note that the process is based on the tidyverse contributing guide, but <a href="https://cynkra.github.io/fledge/" class="external-link"><code>{fledge}</code></a> is used to keep track of the changelog (<code>NEWS.md</code>).</p>
 <div class="section level2">
 <h2 id="fixing-typos">Fixing typos<a class="anchor" aria-label="anchor" href="#fixing-typos"></a></h2>
 <p>You can fix typos, spelling mistakes, or grammatical errors in the documentation directly using the GitHub web interface, as long as the changes are made in the <em>source</em> file. This generally means you’ll need to edit <a href="https://roxygen2.r-lib.org/articles/roxygen2.html" class="external-link">roxygen2 comments</a> in an <code>.R</code>, not a <code>.Rd</code> file. You can find the <code>.R</code> file that generates the <code>.Rd</code> by reading the comment in the first line.</p>
@@ -55,9 +58,15 @@
 <ul><li><p>Fork the package and clone onto your computer. If you haven’t done this before, we recommend using <code>usethis::create_from_github("jesse-smith/futuremice", fork = TRUE)</code>.</p></li>
 <li><p>Install all development dependencies with <code><a href="https://devtools.r-lib.org/reference/install_deps.html" class="external-link">devtools::install_dev_deps()</a></code>, and then make sure the package passes R CMD check by running <code><a href="https://devtools.r-lib.org/reference/check.html" class="external-link">devtools::check()</a></code>. If R CMD check doesn’t pass cleanly, it’s a good idea to ask for help before continuing.</p></li>
 <li><p>Create a Git branch for your pull request (PR). We recommend using <code>usethis::pr_init("brief-description-of-change")</code>.</p></li>
-<li><p>Make your changes, commit to git, and then create a PR by running <code><a href="https://usethis.r-lib.org/reference/pull-requests.html" class="external-link">usethis::pr_push()</a></code>, and following the prompts in your browser. The title of your PR should briefly describe the change. The body of your PR should contain <code>Fixes #issue-number</code>.</p></li>
-<li><p>For user-facing changes, add a bullet to the top of <code>NEWS.md</code> (i.e. just below the first header). Follow the style described in <a href="https://style.tidyverse.org/news.html" class="external-link uri">https://style.tidyverse.org/news.html</a>.</p></li>
-</ul></div>
+<li><p>Make your changes and commit to git. For important user-facing changes, add a hyphen (<code>-</code>) or asterisk (<code>*</code>) to at the beginning of important commit messages These are the commit messages that’ll be recorded in the changelog eventually! You may also wish to only include the message for your PR’s merge/squash commit (see below). Exclude housekeeping parts of the message by typing them after a line <code>---</code>. For example:</p></li>
+</ul><pre><code>- Add support for bla databases.</code></pre>
+<p>or</p>
+<pre><code>- Add support for bla databases.
+
+---
+
+Also tweak the CI workflow accordingly :sweat_smile:</code></pre>
+<ul><li>Create a PR by running <code><a href="https://usethis.r-lib.org/reference/pull-requests.html" class="external-link">usethis::pr_push()</a></code> and following the prompts in your browser. The title of your PR should briefly describe the change. If you have user-facing changes and haven’t already marked them for documentation in the changelog, prefix the title with a hyphen (<code>-</code>) or asterisk (<code>*</code>) (see above). The body of your PR should contain <code>Fixes #issue-number</code>.</li></ul></div>
 <div class="section level3">
 <h3 id="code-style">Code style<a class="anchor" aria-label="anchor" href="#code-style"></a></h3>
 <ul><li><p>New code should follow the tidyverse <a href="https://style.tidyverse.org" class="external-link">style guide</a>. You can use the <a href="https://CRAN.R-project.org/package=styler" class="external-link">styler</a> package to apply these styles, but please don’t restyle code that has nothing to do with your PR.</p></li>
@@ -80,7 +89,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer></div>
