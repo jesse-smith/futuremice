@@ -65,14 +65,14 @@ Now, let’s impute our missing data:
 # Impute the missing values using defaults
 # Use `progressr::with_progress()` to show the progress bar
 mids <- progressr::with_progress(future_mice(mice::nhanes))
-#> Converged in 36 iterations
-#> R-hat: 1.041/1.041/1.025 < 1.05
+#> Converged in 63 iterations
+#> R-hat: 1.042/1.048/1.044 < 1.05
 
 # Or start with `mice::mice()` and finish with `future_mids()`
-mids <- mice::mice(mice::nhanes, maxit = 1L, printFlag = FALSE)
-mids <- progressr::with_progress(future_mids(mids, maxit = 100L))
-#> Converged in 40 iterations
-#> R-hat: 1.036/1.022/1.019 < 1.05
+mids2 <- mice::mice(mice::nhanes, maxit = 1L, printFlag = FALSE)
+mids2 <- progressr::with_progress(future_mids(mids2, maxit = 100L))
+#> Converged in 44 iterations
+#> R-hat: 1.043/1.029/1.041 < 1.05
 
 # View the resulting `mids` (*m*ultiply *i*mputed *d*ata *s*et) object
 mids
@@ -91,15 +91,15 @@ mids
 # List the actual imputations for BMI
 mids$imp$bmi
 #>       1    2    3    4    5
-#> 1  27.4 27.4 27.4 27.4 27.4
-#> 3  30.1 30.1 30.1 30.1 30.1
+#> 1  33.2 33.2 33.2 33.2 33.2
+#> 3  27.2 27.2 27.2 27.2 27.2
 #> 4  22.5 22.5 22.5 22.5 22.5
-#> 6  20.4 20.4 20.4 20.4 20.4
-#> 10 28.7 28.7 28.7 28.7 28.7
-#> 11 20.4 20.4 20.4 20.4 20.4
+#> 6  27.5 27.5 27.5 27.5 27.5
+#> 10 27.4 27.4 27.4 27.4 27.4
+#> 11 29.6 29.6 29.6 29.6 29.6
 #> 12 22.5 22.5 22.5 22.5 22.5
-#> 16 33.2 33.2 33.2 33.2 33.2
-#> 21 20.4 20.4 20.4 20.4 20.4
+#> 16 27.2 27.2 27.2 27.2 27.2
+#> 21 35.3 35.3 35.3 35.3 35.3
 ```
 
 Note that `future_mice()` will often run longer than `mice::mice()`’s
@@ -127,15 +127,56 @@ fit <- with(mids, lm(chl ~ age + bmi))
 
 # Pool and summarize the results
 summary(mice::pool(fit))
-#>          term   estimate std.error statistic       df      p.value
-#> 1 (Intercept) -58.844546 45.006173 -1.307477 20.23797 2.057104e-01
-#> 2         age  38.856726  7.735480  5.023182 20.23797 6.300684e-05
-#> 3         bmi   6.994186  1.455035  4.806886 20.23797 1.040677e-04
+#>          term  estimate std.error  statistic       df      p.value
+#> 1 (Intercept)  4.210554 50.318871 0.08367742 20.23797 0.9341350824
+#> 2         age 31.876011  7.851262 4.05998564 20.23797 0.0005992299
+#> 3         bmi  4.975187  1.550839 3.20806096 20.23797 0.0043667973
 ```
 
 The complete-data model is fit to each imputed data set, and the results
 are combined to arrive at estimates that properly account for the
 missing data.
+
+We can also compare two `mids` objects using `compare_mids()`:
+
+``` r
+compare_mids(mids, mids2, ignore_rng = TRUE)
+#> Elements of `x` not in `y`
+#> ✔ None
+#> Elements of `y` not in `x`
+#> ✔ None
+#> Shared elements with differences:
+#> ✖ iteration
+#> ✖ chainMean
+#> ✖ chainVar
+#> Shared elements without differences:
+#> ✔ data
+#> ✔ imp
+#> ✔ m
+#> ✔ where
+#> ✔ blocks
+#> ✔ nmis
+#> ✔ method
+#> ✔ predictorMatrix
+#> ✔ visitSequence
+#> ✔ formulas
+#> ✔ post
+#> ✔ blots
+#> ✔ ignore
+#> Shared elements ignored:
+#> ℹ call
+#> ℹ seed
+#> ℹ lastSeedValue
+#> ℹ loggedEvents
+#> ℹ version
+#> ℹ date
+```
+
+This will show us where differences occur between the two objects (if
+there are any). We’ll ignore attributes that depend on the RNG state
+because evaluating imputations in parallel requires a different kind of
+random number generation than evaluating sequentially, as we did in the
+first iteration of `mice::mice()`.
 
 ## Code of Conduct
 
