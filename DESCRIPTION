@@ -24,6 +24,7 @@ Suggests:
     bench,
     covr,
     devtools,
+    fledge,
     future,
     ranger,
     renv,
