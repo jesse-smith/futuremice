@@ -81,29 +81,29 @@ imputation quality once convergence is achieved.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">future_mice</span><span class="op">(</span>
-  <span class="va">data</span>,
-  m <span class="op">=</span> <span class="fl">5L</span>,
-  method <span class="op">=</span> <span class="cn">NULL</span>,
-  predictorMatrix <span class="op">=</span> <span class="cn">NULL</span>,
-  ignore <span class="op">=</span> <span class="cn">NULL</span>,
-  where <span class="op">=</span> <span class="cn">NULL</span>,
-  blocks <span class="op">=</span> <span class="cn">NULL</span>,
-  visitSequence <span class="op">=</span> <span class="cn">NULL</span>,
-  formulas <span class="op">=</span> <span class="cn">NULL</span>,
-  blots <span class="op">=</span> <span class="cn">NULL</span>,
-  post <span class="op">=</span> <span class="cn">NULL</span>,
-  defaultMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pmm"</span>, <span class="st">"logreg"</span>, <span class="st">"polyreg"</span>, <span class="st">"polr"</span><span class="op">)</span>,
-  maxit <span class="op">=</span> <span class="fl">100L</span>,
-  quiet <span class="op">=</span> <span class="cn">FALSE</span>,
-  seed <span class="op">=</span> <span class="cn">NA</span>,
-  data.init <span class="op">=</span> <span class="cn">NULL</span>,
-  chunk_size <span class="op">=</span> <span class="fl">1L</span>,
-  rhat_thresh <span class="op">=</span> <span class="fl">1.05</span>,
-  rhat_it <span class="op">=</span> <span class="fl">3L</span>,
-  progressor <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">future_mice</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  m <span class="op">=</span> <span class="fl">5L</span>,</span>
+<span>  method <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  predictorMatrix <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ignore <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  where <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  blocks <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  visitSequence <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  formulas <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  blots <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  post <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  defaultMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pmm"</span>, <span class="st">"logreg"</span>, <span class="st">"polyreg"</span>, <span class="st">"polr"</span><span class="op">)</span>,</span>
+<span>  maxit <span class="op">=</span> <span class="fl">100L</span>,</span>
+<span>  quiet <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  seed <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  data.init <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  chunk_size <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>  rhat_thresh <span class="op">=</span> <span class="fl">1.05</span>,</span>
+<span>  rhat_it <span class="op">=</span> <span class="fl">3L</span>,</span>
+<span>  progressor <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -335,21 +335,21 @@ be equivalent, but does not function identically in subsequent calls to
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Run imputations in parallel (just two to avoid hogging resources)</span></span>
-<span class="r-in"><span class="co"># Picking a number of workers that divides `m` evenly can help performance</span></span>
-<span class="r-in"><span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="st">"multisession"</span>, workers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">2L</span>, <span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/re-exports.html" class="external-link">availableCores</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Use just like `mice::mice()` - examples from {mice} documentation</span></span>
-<span class="r-in"><span class="va">mids</span> <span class="op">&lt;-</span> <span class="fu">future_mice</span><span class="op">(</span><span class="fu">mice</span><span class="fu">::</span><span class="va"><a href="https://amices.org/mice/reference/nhanes.html" class="external-link">nhanes</a></span>, m <span class="op">=</span> <span class="fl">2L</span>, maxit <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Run imputations in parallel (just two to avoid hogging resources)</span></span></span>
+<span class="r-in"><span><span class="co"># Picking a number of workers that divides `m` evenly can help performance</span></span></span>
+<span class="r-in"><span><span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="st">"multisession"</span>, workers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">2L</span>, <span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://parallelly.futureverse.org/reference/availableCores.html" class="external-link">availableCores</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Use just like `mice::mice()` - examples from {mice} documentation</span></span></span>
+<span class="r-in"><span><span class="va">mids</span> <span class="op">&lt;-</span> <span class="fu">future_mice</span><span class="op">(</span><span class="fu">mice</span><span class="fu">::</span><span class="va"><a href="https://amices.org/mice/reference/nhanes.html" class="external-link">nhanes</a></span>, m <span class="op">=</span> <span class="fl">2L</span>, maxit <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Sampling did not converge in 1 iterations</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> R-hat: NA &lt; 1.05</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># Run until convergence (`maxit = 100L` by default)</span></span>
-<span class="r-in"><span class="va">mids</span> <span class="op">&lt;-</span> <span class="fu">future_mice</span><span class="op">(</span><span class="fu">mice</span><span class="fu">::</span><span class="va"><a href="https://amices.org/mice/reference/nhanes.html" class="external-link">nhanes</a></span>, m <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">mids</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># Run until convergence (`maxit = 100L` by default)</span></span></span>
+<span class="r-in"><span><span class="va">mids</span> <span class="op">&lt;-</span> <span class="fu">future_mice</span><span class="op">(</span><span class="fu">mice</span><span class="fu">::</span><span class="va"><a href="https://amices.org/mice/reference/nhanes.html" class="external-link">nhanes</a></span>, m <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">mids</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Class: mids</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of multiple imputations:  2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Imputation methods:</span>
@@ -361,52 +361,52 @@ be equivalent, but does not function identically in subsequent calls to
 <span class="r-out co"><span class="r-pr">#&gt;</span> bmi   1   0   1   1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> hyp   1   1   0   1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> chl   1   1   1   0</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># List the actual imputations for BMI</span></span>
-<span class="r-in"><span class="va">mids</span><span class="op">$</span><span class="va">imp</span><span class="op">$</span><span class="va">bmi</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># List the actual imputations for BMI</span></span></span>
+<span class="r-in"><span><span class="va">mids</span><span class="op">$</span><span class="va">imp</span><span class="op">$</span><span class="va">bmi</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       1    2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  22.5 29.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  30.1 30.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  22.0 22.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  21.7 27.4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 26.3 22.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11 30.1 27.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12 33.2 24.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16 22.7 27.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21 30.1 29.6</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># First completed data matrix</span></span>
-<span class="r-in"><span class="fu">mice</span><span class="fu">::</span><span class="fu"><a href="https://amices.org/mice/reference/complete.mids.html" class="external-link">complete</a></span><span class="op">(</span><span class="va">mids</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  30.1 30.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  26.3 22.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  25.5 21.7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  20.4 22.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 22.0 27.2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 29.6 22.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12 27.5 27.4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16 35.3 27.2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21 28.7 30.1</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># First completed data matrix</span></span></span>
+<span class="r-in"><span><span class="fu">mice</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/complete.html" class="external-link">complete</a></span><span class="op">(</span><span class="va">mids</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    age  bmi hyp chl</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    1 22.5   1 118</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    1 30.1   1 131</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2    2 22.7   1 187</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    1 30.1   1 187</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4    3 22.0   1 204</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    1 26.3   1 187</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    3 25.5   1 204</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5    1 20.4   1 113</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6    3 21.7   2 184</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6    3 20.4   1 184</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7    1 22.5   1 118</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8    1 30.1   1 187</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9    2 22.0   1 238</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10   2 26.3   1 187</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11   1 30.1   1 187</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12   2 33.2   2 204</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10   2 22.0   1 187</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11   1 29.6   1 238</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12   2 27.5   2 206</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 13   3 21.7   1 206</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 14   2 28.7   2 204</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 15   1 29.6   1 187</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16   1 22.7   1 238</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16   1 35.3   1 218</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 17   3 27.2   2 284</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 18   2 26.3   2 199</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 19   1 35.3   1 218</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20   3 25.5   2 206</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21   1 30.1   1 131</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20   3 25.5   2 218</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21   1 28.7   1 187</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 22   1 33.2   1 229</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 23   1 27.5   1 131</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24   3 24.9   1 206</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24   3 24.9   1 204</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 25   2 27.4   1 186</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Reset future plan</span></span>
-<span class="r-in"><span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="st">"sequential"</span><span class="op">)</span></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Reset future plan</span></span></span>
+<span class="r-in"><span><span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="st">"sequential"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

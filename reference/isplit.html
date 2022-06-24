@@ -72,7 +72,7 @@ The resulting number of objects is specified implicitly through <code>mids$m</co
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">isplit</span><span class="op">(</span><span class="va">mids</span>, chunk_size <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">isplit</span><span class="op">(</span><span class="va">mids</span>, chunk_size <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -96,16 +96,16 @@ the resulting <code>list</code>. If <code>mids$m %% chunk_size != 0</code>, a sm
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Create `mids` object</span></span>
-<span class="r-in"><span class="va">mids</span> <span class="op">&lt;-</span> <span class="fu">mice</span><span class="fu">::</span><span class="fu"><a href="https://amices.org/mice/reference/mice.html" class="external-link">mice</a></span><span class="op">(</span><span class="fu">mice</span><span class="fu">::</span><span class="va"><a href="https://amices.org/mice/reference/nhanes.html" class="external-link">nhanes</a></span>, m <span class="op">=</span> <span class="fl">2L</span>, maxit <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Create `mids` object</span></span></span>
+<span class="r-in"><span><span class="va">mids</span> <span class="op">&lt;-</span> <span class="fu">mice</span><span class="fu">::</span><span class="fu"><a href="https://amices.org/mice/reference/mice.html" class="external-link">mice</a></span><span class="op">(</span><span class="fu">mice</span><span class="fu">::</span><span class="va"><a href="https://amices.org/mice/reference/nhanes.html" class="external-link">nhanes</a></span>, m <span class="op">=</span> <span class="fl">2L</span>, maxit <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  iter imp variable</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   1   1  bmi  hyp  chl</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   1   2  bmi  hyp  chl</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Split into two - 1 imputation per object</span></span>
-<span class="r-in"><span class="va">mids_list</span> <span class="op">&lt;-</span> <span class="fu">isplit</span><span class="op">(</span><span class="va">mids</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">mids_list</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Split into two - 1 imputation per object</span></span></span>
+<span class="r-in"><span><span class="va">mids_list</span> <span class="op">&lt;-</span> <span class="fu">isplit</span><span class="op">(</span><span class="va">mids</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mids_list</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Class: mids</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of multiple imputations:  1 </span>
@@ -132,7 +132,7 @@ the resulting <code>list</code>. If <code>mids$m %% chunk_size != 0</code>, a sm
 <span class="r-out co"><span class="r-pr">#&gt;</span> hyp   1   1   0   1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> chl   1   1   1   0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -74,115 +74,115 @@
 </h2>
 <p>You can install the development version of futuremice like so:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># You will need Rtools to install packages from Github on Windows</span>
-<span class="co"># `devtools` with throw an informative error if Rtools is not found</span>
-<span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="st">"devtools"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"jesse-smith/futuremice"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># You will need Rtools to install packages from Github on Windows</span></span>
+<span><span class="co"># `devtools` with throw an informative error if Rtools is not found</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="st">"devtools"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"jesse-smith/futuremice"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="minimal-example">Minimal Example<a class="anchor" aria-label="anchor" href="#minimal-example"></a>
 </h2>
 <p>Let’s run the example from the <a href="https://github.com/amices/mice" class="external-link">mice</a> package documentation, but in parallel.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Load {futuremice}</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jesse-smith/futuremice" class="external-link">futuremice</a></span><span class="op">)</span>
-
-<span class="co"># Evaluate futures in parallel - max of two workers to avoid hogging resources</span>
-<span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="st">"multisession"</span>, workers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">2L</span>, <span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/re-exports.html" class="external-link">availableCores</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># Use {progress} package for progress bar - shows diagnostics in real time</span>
-<span class="fu">progressr</span><span class="fu">::</span><span class="fu"><a href="https://progressr.futureverse.org/reference/handlers.html" class="external-link">handlers</a></span><span class="op">(</span><span class="st">"progress"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Load {futuremice}</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jesse-smith/futuremice" class="external-link">futuremice</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Evaluate futures in parallel - max of two workers to avoid hogging resources</span></span>
+<span><span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="st">"multisession"</span>, workers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">2L</span>, <span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://parallelly.futureverse.org/reference/availableCores.html" class="external-link">availableCores</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Use {progress} package for progress bar - shows diagnostics in real time</span></span>
+<span><span class="fu">progressr</span><span class="fu">::</span><span class="fu"><a href="https://progressr.futureverse.org/reference/handlers.html" class="external-link">handlers</a></span><span class="op">(</span><span class="st">"progress"</span><span class="op">)</span></span></code></pre></div>
 <p><a href="https://github.com/jesse-smith/futuremice" class="external-link">futuremice</a> uses the <a href="https://future.futureverse.org" class="external-link">future</a> package to run imputations in parallel. By default, <a href="https://future.futureverse.org" class="external-link">future</a> will run a <code>"sequential"</code> plan, which is no different (and a little less efficient) than calling <code><a href="https://amices.org/mice/reference/mice.html" class="external-link">mice::mice()</a></code>. To take advantage of multiple CPUs, we can use a <code>"multisession"</code> plan (see the <a href="https://future.futureverse.org/articles/future-1-overview.html#controlling-how-futures-are-resolved" class="external-link">vignette</a> from the <a href="https://future.futureverse.org" class="external-link">future</a> package for details on different plans). <code><a href="reference/future_mice.html">future_mice()</a></code> also provides a progress bar and real-time convergence diagnostics using <a href="https://progressr.futureverse.org" class="external-link">progressr</a>; however, the default progress bar does not show messages, so we’ll use the <code>progress</code> handler to see our diagnostics.</p>
 <p>Now, let’s impute our missing data:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Impute the missing values using defaults</span>
-<span class="co"># Use `progressr::with_progress()` to show the progress bar</span>
-<span class="va">mids</span> <span class="op">&lt;-</span> <span class="fu">progressr</span><span class="fu">::</span><span class="fu"><a href="https://progressr.futureverse.org/reference/with_progress.html" class="external-link">with_progress</a></span><span class="op">(</span><span class="fu"><a href="reference/future_mice.html">future_mice</a></span><span class="op">(</span><span class="fu">mice</span><span class="fu">::</span><span class="va"><a href="https://amices.org/mice/reference/nhanes.html" class="external-link">nhanes</a></span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Converged in 63 iterations</span>
-<span class="co">#&gt; R-hat: 1.042/1.048/1.044 &lt; 1.05</span>
-
-<span class="co"># Or start with `mice::mice()` and finish with `future_mids()`</span>
-<span class="va">mids2</span> <span class="op">&lt;-</span> <span class="fu">mice</span><span class="fu">::</span><span class="fu"><a href="https://amices.org/mice/reference/mice.html" class="external-link">mice</a></span><span class="op">(</span><span class="fu">mice</span><span class="fu">::</span><span class="va"><a href="https://amices.org/mice/reference/nhanes.html" class="external-link">nhanes</a></span>, maxit <span class="op">=</span> <span class="fl">1L</span>, printFlag <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="va">mids2</span> <span class="op">&lt;-</span> <span class="fu">progressr</span><span class="fu">::</span><span class="fu"><a href="https://progressr.futureverse.org/reference/with_progress.html" class="external-link">with_progress</a></span><span class="op">(</span><span class="fu"><a href="reference/future_mids.html">future_mids</a></span><span class="op">(</span><span class="va">mids2</span>, maxit <span class="op">=</span> <span class="fl">100L</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Converged in 44 iterations</span>
-<span class="co">#&gt; R-hat: 1.043/1.029/1.041 &lt; 1.05</span>
-
-<span class="co"># View the resulting `mids` (*m*ultiply *i*mputed *d*ata *s*et) object</span>
-<span class="va">mids</span>
-<span class="co">#&gt; Class: mids</span>
-<span class="co">#&gt; Number of multiple imputations:  5 </span>
-<span class="co">#&gt; Imputation methods:</span>
-<span class="co">#&gt;   age   bmi   hyp   chl </span>
-<span class="co">#&gt;    "" "pmm" "pmm" "pmm" </span>
-<span class="co">#&gt; PredictorMatrix:</span>
-<span class="co">#&gt;     age bmi hyp chl</span>
-<span class="co">#&gt; age   0   1   1   1</span>
-<span class="co">#&gt; bmi   1   0   1   1</span>
-<span class="co">#&gt; hyp   1   1   0   1</span>
-<span class="co">#&gt; chl   1   1   1   0</span>
-
-<span class="co"># List the actual imputations for BMI</span>
-<span class="va">mids</span><span class="op">$</span><span class="va">imp</span><span class="op">$</span><span class="va">bmi</span>
-<span class="co">#&gt;       1    2    3    4    5</span>
-<span class="co">#&gt; 1  33.2 33.2 33.2 33.2 33.2</span>
-<span class="co">#&gt; 3  27.2 27.2 27.2 27.2 27.2</span>
-<span class="co">#&gt; 4  22.5 22.5 22.5 22.5 22.5</span>
-<span class="co">#&gt; 6  27.5 27.5 27.5 27.5 27.5</span>
-<span class="co">#&gt; 10 27.4 27.4 27.4 27.4 27.4</span>
-<span class="co">#&gt; 11 29.6 29.6 29.6 29.6 29.6</span>
-<span class="co">#&gt; 12 22.5 22.5 22.5 22.5 22.5</span>
-<span class="co">#&gt; 16 27.2 27.2 27.2 27.2 27.2</span>
-<span class="co">#&gt; 21 35.3 35.3 35.3 35.3 35.3</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Impute the missing values using defaults</span></span>
+<span><span class="co"># Use `progressr::with_progress()` to show the progress bar</span></span>
+<span><span class="va">mids</span> <span class="op">&lt;-</span> <span class="fu">progressr</span><span class="fu">::</span><span class="fu"><a href="https://progressr.futureverse.org/reference/with_progress.html" class="external-link">with_progress</a></span><span class="op">(</span><span class="fu"><a href="reference/future_mice.html">future_mice</a></span><span class="op">(</span><span class="fu">mice</span><span class="fu">::</span><span class="va"><a href="https://amices.org/mice/reference/nhanes.html" class="external-link">nhanes</a></span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Converged in 63 iterations</span></span>
+<span><span class="co">#&gt; R-hat: 1.042/1.048/1.044 &lt; 1.05</span></span>
+<span></span>
+<span><span class="co"># Or start with `mice::mice()` and finish with `future_mids()`</span></span>
+<span><span class="va">mids2</span> <span class="op">&lt;-</span> <span class="fu">mice</span><span class="fu">::</span><span class="fu"><a href="https://amices.org/mice/reference/mice.html" class="external-link">mice</a></span><span class="op">(</span><span class="fu">mice</span><span class="fu">::</span><span class="va"><a href="https://amices.org/mice/reference/nhanes.html" class="external-link">nhanes</a></span>, maxit <span class="op">=</span> <span class="fl">1L</span>, printFlag <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">mids2</span> <span class="op">&lt;-</span> <span class="fu">progressr</span><span class="fu">::</span><span class="fu"><a href="https://progressr.futureverse.org/reference/with_progress.html" class="external-link">with_progress</a></span><span class="op">(</span><span class="fu"><a href="reference/future_mids.html">future_mids</a></span><span class="op">(</span><span class="va">mids2</span>, maxit <span class="op">=</span> <span class="fl">100L</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Converged in 44 iterations</span></span>
+<span><span class="co">#&gt; R-hat: 1.043/1.029/1.041 &lt; 1.05</span></span>
+<span></span>
+<span><span class="co"># View the resulting `mids` (*m*ultiply *i*mputed *d*ata *s*et) object</span></span>
+<span><span class="va">mids</span></span>
+<span><span class="co">#&gt; Class: mids</span></span>
+<span><span class="co">#&gt; Number of multiple imputations:  5 </span></span>
+<span><span class="co">#&gt; Imputation methods:</span></span>
+<span><span class="co">#&gt;   age   bmi   hyp   chl </span></span>
+<span><span class="co">#&gt;    "" "pmm" "pmm" "pmm" </span></span>
+<span><span class="co">#&gt; PredictorMatrix:</span></span>
+<span><span class="co">#&gt;     age bmi hyp chl</span></span>
+<span><span class="co">#&gt; age   0   1   1   1</span></span>
+<span><span class="co">#&gt; bmi   1   0   1   1</span></span>
+<span><span class="co">#&gt; hyp   1   1   0   1</span></span>
+<span><span class="co">#&gt; chl   1   1   1   0</span></span>
+<span></span>
+<span><span class="co"># List the actual imputations for BMI</span></span>
+<span><span class="va">mids</span><span class="op">$</span><span class="va">imp</span><span class="op">$</span><span class="va">bmi</span></span>
+<span><span class="co">#&gt;       1    2    3    4    5</span></span>
+<span><span class="co">#&gt; 1  33.2 33.2 33.2 33.2 33.2</span></span>
+<span><span class="co">#&gt; 3  27.2 27.2 27.2 27.2 27.2</span></span>
+<span><span class="co">#&gt; 4  22.5 22.5 22.5 22.5 22.5</span></span>
+<span><span class="co">#&gt; 6  27.5 27.5 27.5 27.5 27.5</span></span>
+<span><span class="co">#&gt; 10 27.4 27.4 27.4 27.4 27.4</span></span>
+<span><span class="co">#&gt; 11 29.6 29.6 29.6 29.6 29.6</span></span>
+<span><span class="co">#&gt; 12 22.5 22.5 22.5 22.5 22.5</span></span>
+<span><span class="co">#&gt; 16 27.2 27.2 27.2 27.2 27.2</span></span>
+<span><span class="co">#&gt; 21 35.3 35.3 35.3 35.3 35.3</span></span></code></pre></div>
 <p>Note that <code><a href="reference/future_mice.html">future_mice()</a></code> will often run longer than <code><a href="https://amices.org/mice/reference/mice.html" class="external-link">mice::mice()</a></code>’s default of <code>5</code> imputations before convergence is confidently achieved. Also note that we will only get a progress bar if we wrap the call in <code>with_progress()</code>; this is a feature of the <a href="https://progressr.futureverse.org" class="external-link">progressr</a> package.</p>
 <p>We can use the resulting <code>mids</code> object just like the result of a call to <code><a href="https://amices.org/mice/reference/mice.html" class="external-link">mice::mice()</a></code>. Let’s inspect the quality of the imputations:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Inspect quality of imputations</span>
-<span class="fu">mice</span><span class="fu">::</span><span class="fu"><a href="https://amices.org/mice/reference/stripplot.mids.html" class="external-link">stripplot</a></span><span class="op">(</span><span class="va">mids</span>, <span class="va">chl</span>, pch <span class="op">=</span> <span class="fl">19</span>, xlab <span class="op">=</span> <span class="st">"Imputation number"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Inspect quality of imputations</span></span>
+<span><span class="fu">mice</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/lattice/man/xyplot.html" class="external-link">stripplot</a></span><span class="op">(</span><span class="va">mids</span>, <span class="va">chl</span>, pch <span class="op">=</span> <span class="fl">19</span>, xlab <span class="op">=</span> <span class="st">"Imputation number"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-example-inspect-1.png" width="100%"></p>
 <p>In general, we would like the imputations to be plausible, i.e., values that could have been observed if they had not been missing. Now let’s fit a model to the imputed data set and pool the results:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Fit complete-data model</span>
-<span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">mids</span>, <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">chl</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">bmi</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># Pool and summarize the results</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu">mice</span><span class="fu">::</span><span class="fu"><a href="https://amices.org/mice/reference/pool.html" class="external-link">pool</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt;          term  estimate std.error  statistic       df      p.value</span>
-<span class="co">#&gt; 1 (Intercept)  4.210554 50.318871 0.08367742 20.23797 0.9341350824</span>
-<span class="co">#&gt; 2         age 31.876011  7.851262 4.05998564 20.23797 0.0005992299</span>
-<span class="co">#&gt; 3         bmi  4.975187  1.550839 3.20806096 20.23797 0.0043667973</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Fit complete-data model</span></span>
+<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">mids</span>, <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">chl</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">bmi</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Pool and summarize the results</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu">mice</span><span class="fu">::</span><span class="fu"><a href="https://amices.org/mice/reference/pool.html" class="external-link">pool</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;          term  estimate std.error  statistic       df      p.value</span></span>
+<span><span class="co">#&gt; 1 (Intercept)  4.210554 50.318871 0.08367742 20.23797 0.9341350824</span></span>
+<span><span class="co">#&gt; 2         age 31.876011  7.851262 4.05998564 20.23797 0.0005992299</span></span>
+<span><span class="co">#&gt; 3         bmi  4.975187  1.550839 3.20806096 20.23797 0.0043667973</span></span></code></pre></div>
 <p>The complete-data model is fit to each imputed data set, and the results are combined to arrive at estimates that properly account for the missing data.</p>
 <p>We can also compare two <code>mids</code> objects using <code><a href="reference/compare_mids.html">compare_mids()</a></code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/compare_mids.html">compare_mids</a></span><span class="op">(</span><span class="va">mids</span>, <span class="va">mids2</span>, ignore_rng <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="co">#&gt; Elements of `x` not in `y`</span>
-<span class="co">#&gt; ✔ None</span>
-<span class="co">#&gt; Elements of `y` not in `x`</span>
-<span class="co">#&gt; ✔ None</span>
-<span class="co">#&gt; Shared elements with differences:</span>
-<span class="co">#&gt; ✖ iteration</span>
-<span class="co">#&gt; ✖ chainMean</span>
-<span class="co">#&gt; ✖ chainVar</span>
-<span class="co">#&gt; Shared elements without differences:</span>
-<span class="co">#&gt; ✔ data</span>
-<span class="co">#&gt; ✔ imp</span>
-<span class="co">#&gt; ✔ m</span>
-<span class="co">#&gt; ✔ where</span>
-<span class="co">#&gt; ✔ blocks</span>
-<span class="co">#&gt; ✔ nmis</span>
-<span class="co">#&gt; ✔ method</span>
-<span class="co">#&gt; ✔ predictorMatrix</span>
-<span class="co">#&gt; ✔ visitSequence</span>
-<span class="co">#&gt; ✔ formulas</span>
-<span class="co">#&gt; ✔ post</span>
-<span class="co">#&gt; ✔ blots</span>
-<span class="co">#&gt; ✔ ignore</span>
-<span class="co">#&gt; Shared elements ignored:</span>
-<span class="co">#&gt; ℹ call</span>
-<span class="co">#&gt; ℹ seed</span>
-<span class="co">#&gt; ℹ lastSeedValue</span>
-<span class="co">#&gt; ℹ loggedEvents</span>
-<span class="co">#&gt; ℹ version</span>
-<span class="co">#&gt; ℹ date</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/compare_mids.html">compare_mids</a></span><span class="op">(</span><span class="va">mids</span>, <span class="va">mids2</span>, ignore_rng <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Elements of `x` not in `y`</span></span>
+<span><span class="co">#&gt; ✔ None</span></span>
+<span><span class="co">#&gt; Elements of `y` not in `x`</span></span>
+<span><span class="co">#&gt; ✔ None</span></span>
+<span><span class="co">#&gt; Shared elements with differences:</span></span>
+<span><span class="co">#&gt; ✖ iteration</span></span>
+<span><span class="co">#&gt; ✖ chainMean</span></span>
+<span><span class="co">#&gt; ✖ chainVar</span></span>
+<span><span class="co">#&gt; Shared elements without differences:</span></span>
+<span><span class="co">#&gt; ✔ data</span></span>
+<span><span class="co">#&gt; ✔ imp</span></span>
+<span><span class="co">#&gt; ✔ m</span></span>
+<span><span class="co">#&gt; ✔ where</span></span>
+<span><span class="co">#&gt; ✔ blocks</span></span>
+<span><span class="co">#&gt; ✔ nmis</span></span>
+<span><span class="co">#&gt; ✔ method</span></span>
+<span><span class="co">#&gt; ✔ predictorMatrix</span></span>
+<span><span class="co">#&gt; ✔ visitSequence</span></span>
+<span><span class="co">#&gt; ✔ formulas</span></span>
+<span><span class="co">#&gt; ✔ post</span></span>
+<span><span class="co">#&gt; ✔ blots</span></span>
+<span><span class="co">#&gt; ✔ ignore</span></span>
+<span><span class="co">#&gt; Shared elements ignored:</span></span>
+<span><span class="co">#&gt; ℹ call</span></span>
+<span><span class="co">#&gt; ℹ seed</span></span>
+<span><span class="co">#&gt; ℹ lastSeedValue</span></span>
+<span><span class="co">#&gt; ℹ loggedEvents</span></span>
+<span><span class="co">#&gt; ℹ version</span></span>
+<span><span class="co">#&gt; ℹ date</span></span></code></pre></div>
 <p>This will show us where differences occur between the two objects (if there are any). We’ll ignore attributes that depend on the RNG state because evaluating imputations in parallel requires a different kind of random number generation than evaluating sequentially, as we did in the first iteration of <code><a href="https://amices.org/mice/reference/mice.html" class="external-link">mice::mice()</a></code>.</p>
 </div>
 <div class="section level2">

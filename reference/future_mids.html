@@ -63,18 +63,18 @@ for details).</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">future_mids</span><span class="op">(</span>
-  <span class="va">obj</span>,
-  newdata <span class="op">=</span> <span class="cn">NULL</span>,
-  maxit <span class="op">=</span> <span class="fl">100L</span>,
-  quiet <span class="op">=</span> <span class="cn">FALSE</span>,
-  chunk_size <span class="op">=</span> <span class="fl">1L</span>,
-  rhat_thresh <span class="op">=</span> <span class="fl">1.05</span>,
-  rhat_it <span class="op">=</span> <span class="fl">3L</span>,
-  progressor <span class="op">=</span> <span class="cn">NULL</span>,
-  update_call <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">future_mids</span><span class="op">(</span></span>
+<span>  <span class="va">obj</span>,</span>
+<span>  newdata <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  maxit <span class="op">=</span> <span class="fl">100L</span>,</span>
+<span>  quiet <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  chunk_size <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>  rhat_thresh <span class="op">=</span> <span class="fl">1.05</span>,</span>
+<span>  rhat_it <span class="op">=</span> <span class="fl">3L</span>,</span>
+<span>  progressor <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  update_call <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -145,33 +145,33 @@ functions.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="co"># Run in parallel (just two cores to avoid hogging resources)</span></span>
-<span class="r-in"><span class="co"># Picking a number of workers that divides `m` evenly can help performance</span></span>
-<span class="r-in"><span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="st">"multisession"</span>, workers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">2L</span>, <span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/re-exports.html" class="external-link">availableCores</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Run `mice::mice()`</span></span>
-<span class="r-in"><span class="co"># `m` and `maxit` are small here to keep runtime short</span></span>
-<span class="r-in"><span class="va">mids</span> <span class="op">&lt;-</span> <span class="fu">mice</span><span class="fu">::</span><span class="fu"><a href="https://amices.org/mice/reference/mice.html" class="external-link">mice</a></span><span class="op">(</span><span class="fu">mice</span><span class="fu">::</span><span class="va"><a href="https://amices.org/mice/reference/nhanes.html" class="external-link">nhanes</a></span>, m <span class="op">=</span> <span class="fl">2L</span>, maxit <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Run in parallel (just two cores to avoid hogging resources)</span></span></span>
+<span class="r-in"><span><span class="co"># Picking a number of workers that divides `m` evenly can help performance</span></span></span>
+<span class="r-in"><span><span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="st">"multisession"</span>, workers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="fl">2L</span>, <span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://parallelly.futureverse.org/reference/availableCores.html" class="external-link">availableCores</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Run `mice::mice()`</span></span></span>
+<span class="r-in"><span><span class="co"># `m` and `maxit` are small here to keep runtime short</span></span></span>
+<span class="r-in"><span><span class="va">mids</span> <span class="op">&lt;-</span> <span class="fu">mice</span><span class="fu">::</span><span class="fu"><a href="https://amices.org/mice/reference/mice.html" class="external-link">mice</a></span><span class="op">(</span><span class="fu">mice</span><span class="fu">::</span><span class="va"><a href="https://amices.org/mice/reference/nhanes.html" class="external-link">nhanes</a></span>, m <span class="op">=</span> <span class="fl">2L</span>, maxit <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  iter imp variable</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   1   1  bmi  hyp  chl</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   1   2  bmi  hyp  chl</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Run for additional iteration</span></span>
-<span class="r-in"><span class="va">mids</span> <span class="op">&lt;-</span> <span class="fu">future_mids</span><span class="op">(</span><span class="va">mids</span>, maxit <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Run for additional iteration</span></span></span>
+<span class="r-in"><span><span class="va">mids</span> <span class="op">&lt;-</span> <span class="fu">future_mids</span><span class="op">(</span><span class="va">mids</span>, maxit <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Sampling did not converge in 2 iterations</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> R-hat: NA/NA &lt; 1.05</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># Run until convergence</span></span>
-<span class="r-in"><span class="va">mids</span> <span class="op">&lt;-</span> <span class="fu">future_mids</span><span class="op">(</span><span class="va">mids</span>, maxit <span class="op">=</span> <span class="fl">100L</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">mids</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Reset future plan</span></span>
-<span class="r-in"><span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="st">"sequential"</span><span class="op">)</span></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># Run until convergence</span></span></span>
+<span class="r-in"><span><span class="va">mids</span> <span class="op">&lt;-</span> <span class="fu">future_mids</span><span class="op">(</span><span class="va">mids</span>, maxit <span class="op">=</span> <span class="fl">100L</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mids</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Reset future plan</span></span></span>
+<span class="r-in"><span><span class="fu">future</span><span class="fu">::</span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="st">"sequential"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

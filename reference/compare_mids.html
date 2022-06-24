@@ -69,16 +69,16 @@ these differences as a <code>character</code> vector if found, it always returns
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">compare_mids</span><span class="op">(</span>
-  <span class="va">x</span>,
-  <span class="va">y</span>,
-  show_msg <span class="op">=</span> <span class="cn">TRUE</span>,
-  show_rtn <span class="op">=</span> <span class="op">!</span><span class="va">show_msg</span>,
-  ignore_rng <span class="op">=</span> <span class="cn">NULL</span>,
-  ignore_call <span class="op">=</span> <span class="cn">TRUE</span>,
-  ignore_version <span class="op">=</span> <span class="cn">TRUE</span>,
-  ignore_date <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">compare_mids</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">y</span>,</span>
+<span>  show_msg <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  show_rtn <span class="op">=</span> <span class="op">!</span><span class="va">show_msg</span>,</span>
+<span>  ignore_rng <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ignore_call <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  ignore_version <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  ignore_date <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -145,14 +145,14 @@ differences in <code>seed</code> and <code>lastSeedValue</code> are also allowed
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">m_mids</span> <span class="op">&lt;-</span> <span class="fu">mice</span><span class="fu">::</span><span class="fu"><a href="https://amices.org/mice/reference/mice.html" class="external-link">mice</a></span><span class="op">(</span><span class="fu">mice</span><span class="fu">::</span><span class="va"><a href="https://amices.org/mice/reference/nhanes.html" class="external-link">nhanes</a></span>, m <span class="op">=</span> <span class="fl">1L</span>, maxit <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">m_mids</span> <span class="op">&lt;-</span> <span class="fu">mice</span><span class="fu">::</span><span class="fu"><a href="https://amices.org/mice/reference/mice.html" class="external-link">mice</a></span><span class="op">(</span><span class="fu">mice</span><span class="fu">::</span><span class="va"><a href="https://amices.org/mice/reference/nhanes.html" class="external-link">nhanes</a></span>, m <span class="op">=</span> <span class="fl">1L</span>, maxit <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  iter imp variable</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   1   1  bmi  hyp  chl</span>
-<span class="r-in"><span class="va">f_mids</span> <span class="op">&lt;-</span> <span class="fu"><a href="future_mice.html">future_mice</a></span><span class="op">(</span><span class="fu">mice</span><span class="fu">::</span><span class="va"><a href="https://amices.org/mice/reference/nhanes.html" class="external-link">nhanes</a></span>, m <span class="op">=</span> <span class="fl">1L</span>, maxit <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="va">f_mids</span> <span class="op">&lt;-</span> <span class="fu"><a href="future_mice.html">future_mice</a></span><span class="op">(</span><span class="fu">mice</span><span class="fu">::</span><span class="va"><a href="https://amices.org/mice/reference/nhanes.html" class="external-link">nhanes</a></span>, m <span class="op">=</span> <span class="fl">1L</span>, maxit <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Sampling did not converge in 1 iterations</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> R-hat: NA &lt; 1.05</span>
-<span class="r-in"><span class="fu">compare_mids</span><span class="op">(</span><span class="va">m_mids</span>, <span class="va">f_mids</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">compare_mids</span><span class="op">(</span><span class="va">m_mids</span>, <span class="va">f_mids</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Elements of `x` not in `y`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> None</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Elements of `y` not in `x`</span>
@@ -183,7 +183,7 @@ differences in <code>seed</code> and <code>lastSeedValue</code> are also allowed
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> loggedEvents</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> version</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> date</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
