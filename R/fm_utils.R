@@ -76,15 +76,19 @@ fm_progressor <- function(parallel_params, progressor = NULL) {
 #'
 #' @keywords internal
 fm_furrr_opts <- function(parallel_params) {
+  seed <- fm_rng_seed(parallel_params$seed)
+  if (!exists(".Random.seed")) {
+    rlang::abort("`.Random.seed` does not exist")
+  }
   seed_seq <- rngtools::RNGseq(
-    parallel_params$n_calls,
-    seed = fm_rng_seed(parallel_params$seed),
+    fm_assert_count(parallel_params$n_calls, zero_ok = FALSE),
+    seed = seed,
     simplify = FALSE
   )
   furrr::furrr_options(
     seed = seed_seq,
     globals = character(),
-    chunk_size = parallel_params$chunk_size
+    chunk_size = fm_assert_count(parallel_params$chunk_size, zero_ok = FALSE)
   )
 }
 
