@@ -14,7 +14,7 @@ fm_assert_mids(x, arg_nm = rlang::caller_arg(x))
 
 fm_assert_bool(x, arg_nm = rlang::caller_arg(x))
 
-fm_assert_count(x, arg_nm = rlang::caller_arg(x))
+fm_assert_count(x, zero_ok = TRUE, arg_nm = rlang::caller_arg(x))
 
 fm_assert_seed(x, arg_nm = rlang::caller_arg(x))
 
@@ -27,6 +27,9 @@ fm_assert_vec_int(x, arg_nm = rlang::caller_arg(x))
 
 \item{arg_nm}{The name of the object to check; can usually be inferred from
 the caller environment automatically}
+
+\item{zero_ok}{Should zero be included in the counting numbers or raise an
+error?}
 }
 \value{
 If successful, \code{x}, invisibly; errors if unsuccessful. \code{x} may be

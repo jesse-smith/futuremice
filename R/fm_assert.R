@@ -15,6 +15,8 @@
 #' @param x An object to check
 #' @param arg_nm The name of the object to check; can usually be inferred from
 #'   the caller environment automatically
+#' @param zero_ok Should zero be included in the counting numbers or raise an
+#'   error?
 #'
 #' @return If successful, `x`, invisibly; errors if unsuccessful. `x` may be
 #'   converted to strictly match the required data type.
@@ -52,11 +54,13 @@ fm_assert_bool <- function(x, arg_nm = rlang::caller_arg(x)) {
 #' @rdname fm_assert
 #'
 #' @keywords internal
-fm_assert_count <- function(x, arg_nm = rlang::caller_arg(x)) {
-  if (fm_is_scalar_int(x) && x >= 0L) {
+fm_assert_count <- function(x, zero_ok = TRUE, arg_nm = rlang::caller_arg(x)) {
+  zero_ok <- fm_assert_bool(zero_ok)
+  if (fm_is_scalar_int(x) && ((zero_ok && x >= 0L) || (!zero_ok && x > 0L))) {
     invisible(as.integer(x))
   } else {
-    rlang::abort(paste0("`", arg_nm, "` must be an integer >= 0"))
+    op <- if (zero_ok) ">=" else ">"
+    rlang::abort(paste0("`", arg_nm, "` must be an integer ", op, " 0"))
   }
 }
 
