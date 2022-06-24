@@ -83,14 +83,14 @@ test_that("`fm_progressor()` returns expected value", {
   pp <- fm_parallel_params(m = 1L, chunk_size = 1L, maxit = 1L, seed = 1L)
   p <- progressr::with_progress(progressr::progressor(pp$n_calls * pp$maxit))
   expect_identical(fm_progressor(pp, progressor = p), p)
+  expect_identical(fm_progressor(progressor = p), p)
   expect_s3_class(fm_progressor(pp), class = "progressor")
 })
 test_that("`fm_progressor()` errors when expected", {
   p <- local(progressr::progressor())
   pp <- fm_parallel_params(m = 1L, chunk_size = 1L, maxit = 1L, seed = 1L)
   expect_error(fm_progressor(p))
-  expect_error(fm_progressor(p = p))
-  expect_error(fm_progressor(pp, p = NA))
+  expect_error(fm_progressor(pp, progressor = NA))
 })
 
 test_that("`fm_furrr_opts()` returns expected value", {
@@ -278,6 +278,8 @@ test_that("`fm_set_rownames()` errors when expected on arrays", {
 })
 
 test_that("`fm_gcd()` returns expected output", {
+  expect_identical(fm_gcd(), integer())
+  expect_identical(fm_gcd(numeric()), integer())
   expect_identical(fm_gcd(10, 5), 5L)
   expect_identical(fm_gcd(10, 1), 1L)
   expect_identical(fm_gcd(11, 5), 1L)
