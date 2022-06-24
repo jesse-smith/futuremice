@@ -18,20 +18,19 @@
 #' @keywords internal
 fm_parallel_params <- function(m, chunk_size, maxit, seed) {
   # Check arguments
-  m <- fm_assert_count(m)
-  chunk_size <- fm_assert_count(chunk_size)
+  m <- fm_assert_count(m, zero_ok = FALSE)
+  chunk_size <- fm_assert_count(chunk_size, zero_ok = FALSE)
   maxit <- fm_assert_count(maxit)
   seed <- fm_assert_seed(seed)
-  # Get number of chains per call
-  # largest integer <= `chunk_size` that evenly divides `m`
-  n_chains <- seq_len(chunk_size)
-  n_chains <- max(n_chains[m %% n_chains == 0L])
+
+  # Get number of chains per call- greatest common divisor of `chunk_size` & `m`
+  n_chains <- fm_assert_count(fm_gcd(chunk_size, m), zero_ok = FALSE)
 
   # Update chunk_size to reflect (possibly) multiple chains per chunk
-  chunk_size <- as.integer(max(1, round(chunk_size / n_chains)))
+  chunk_size <- fm_assert_count(chunk_size %/% n_chains, zero_ok = FALSE)
 
   # Calculate number of calls
-  n_calls <- m %/% n_chains
+  n_calls <- fm_assert_count(m %/% n_chains, zero_ok = FALSE)
 
   list(
     n_chains = n_chains,
@@ -53,11 +52,15 @@ fm_parallel_params <- function(m, chunk_size, maxit, seed) {
 #'
 #' @keywords internal
 fm_progressor <- function(parallel_params, progressor = NULL) {
-  if (!(is.null(progressor) || inherits(progressor, "progressor"))) {
+  if (inherits(progressor, "progressor")) {
+    progressor
+  } else if (!is.null(progressor)) {
     rlang::abort(
       "`progressor` must be `NULL` or a `progressor` function from {progressr}"
     )
   } else {
+    fm_assert_count(parallel_params$n_calls)
+    fm_assert_count(parallel_params$maxit)
     progressr::progressor(parallel_params$n_calls * parallel_params$maxit)
   }
 }
