@@ -141,6 +141,7 @@ fm_mice_seed <- function(seed) {
 #' @keywords internal
 fm_rng_seed <- function(seed) {
   seed <- fm_assert_seed(seed)
+  if (is.null(seed)) return(seed)
   if (is.na(seed)) NULL else seed
 }
 
