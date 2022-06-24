@@ -198,7 +198,8 @@ fm_set_rownames <- function(x, names) {
 #' @keywords internal
 fm_gcd <- function(...) {
   # Check and combine arguments
-  x <- abs(vctrs::vec_c(..., .ptype = integer()))
+  x <- vctrs::vec_c(..., .ptype = integer())
+  if (anyNA(x)) rlang::abort("Inputs may not contain missing values")
   if (any(x <= 0L)) rlang::abort("All inputs must be integers >= 0")
 
   # Special case - x is empty
