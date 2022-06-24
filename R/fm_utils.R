@@ -106,7 +106,14 @@ fm_furrr_opts <- function(parallel_params) {
 #'
 #' @keywords internal
 fm_exit_msg <- function(i, rhat_lt, rhat_it, rhat_msg) {
-  if (all(rhat_lt) && NROW(rhat_lt) >= rhat_it) {
+  i <- fm_assert_count(i)
+  rhat_it <- fm_assert_count(rhat_it, zero_ok = FALSE)
+  if (!(is.logical(rhat_lt) && length(rhat_lt) > 0L && length(rhat_lt) <= i)) {
+    rlang::abort(
+      "`rhat_lt` must be `logical` where `0 < length(rhat_lt) <= rhat_it`"
+    )
+  }
+  if (all(rhat_lt) && length(rhat_lt) >= rhat_it) {
     iters <- paste(i, if (i == 1L) "iteration" else "iterations")
     rlang::inform(paste0(
       "Converged in ", iters, "\n",
@@ -163,6 +170,9 @@ NULL
 #'
 #' @keywords internal
 fm_set_colnames <- function(x, names) {
+  if (!((is.vector(names) && length(names) == NCOL(x)) || is.null(names))) {
+    rlang::abort("`names` must be a vector with length equal to `NCOL(x)`")
+  }
   colnames(x) <- names
   x
 }
@@ -171,6 +181,9 @@ fm_set_colnames <- function(x, names) {
 #'
 #' @keywords internal
 fm_set_rownames <- function(x, names) {
+  if (!((is.vector(names) && length(names) == NROW(x)) || is.null(names))) {
+    rlang::abort("`names` must be a vector with length equal to `NROW(x)`")
+  }
   rownames(x) <- names
   x
 }
