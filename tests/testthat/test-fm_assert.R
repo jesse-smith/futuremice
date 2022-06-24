@@ -1,16 +1,26 @@
-test_that("`fm_assert_mids()` checks inheritance", {
+test_that("`fm_assert_mids()` checks inheritance only", {
+  # Real mids object
   mids <- mice::mice(mice::nhanes, m = 1L, maxit = 0L)
   expect_identical(fm_assert_mids(mids), mids)
   list_mids <- mids
   class(list_mids) <- "list"
   expect_error(fm_assert_mids(list_mids))
+
+  # Fake mids object
+  i <- 1L
+  expect_error(fm_assert_mids(i))
+  mids_i <- i
+  class(mids_i) <- "mids"
+  expect_identical(fm_assert_mids(mids_i), mids_i)
 })
 
 
-test_that("`fm_assert_bool() works as expected`", {
+test_that("`fm_assert_bool()` returns expected values", {
   # Scalar, non-missing logicals pass
   expect_identical(fm_assert_bool(TRUE), TRUE)
   expect_identical(fm_assert_bool(FALSE), FALSE)
+})
+test_that("`fm_assert_bool()` errors when expected", {
   # Vector and missing logicals fail
   expect_error(fm_assert_bool(c(TRUE, TRUE)))
   expect_error(fm_assert_bool(NA))
@@ -26,7 +36,7 @@ test_that("`fm_assert_bool() works as expected`", {
 })
 
 
-test_that("`fm_assert_count()` works as expected", {
+test_that("`fm_assert_count()` returns expected values", {
   # Scalar, non-missing, non-negative integers pass
   expect_identical(fm_assert_count(1L), 1L)
   expect_identical(fm_assert_count(0L), 0L)
@@ -39,6 +49,10 @@ test_that("`fm_assert_count()` works as expected", {
     fm_assert_count(as.double(.Machine$integer.max)),
     .Machine$integer.max
   )
+})
+test_that("`fm_assert_count()` errors when expected", {
+  # Zero fails when `zero_ok = FALSE`
+  expect_error(fm_assert_count(0, zero_ok = FALSE))
   # Vector and missing integer-ish values fail
   expect_error(fm_assert_count(c(0L, 1L)))
   expect_error(fm_assert_count(NA_integer_))
@@ -57,7 +71,7 @@ test_that("`fm_assert_count()` works as expected", {
 })
 
 
-test_that("`fm_assert_seed()` works as expected", {
+test_that("`fm_assert_seed()` returns expected values", {
   # Scalar integer values pass
   expect_identical(fm_assert_seed(1L), 1L)
   expect_identical(fm_assert_seed(0L), 0L)
@@ -83,6 +97,8 @@ test_that("`fm_assert_seed()` works as expected", {
   expect_identical(fm_assert_seed(NaN), NA_integer_)
   # NULL passes unchanged
   expect_identical(fm_assert_seed(NULL), NULL)
+})
+test_that("`fm_assert_seed()` errors when expected", {
   # Length 0 integer fails
   expect_error(fm_assert_seed(integer()))
   # Vector integer values fail
@@ -97,7 +113,7 @@ test_that("`fm_assert_seed()` works as expected", {
 })
 
 
-test_that("`fm_assert_num()` works as expected", {
+test_that("`fm_assert_num()` returns expected values", {
   # Scalar, non-missing, finite numerics pass
   # Converts to double
   expect_identical(fm_assert_num(0), 0)
@@ -116,6 +132,8 @@ test_that("`fm_assert_num()` works as expected", {
     fm_assert_num(-.Machine$integer.max),
     as.double(-.Machine$integer.max)
   )
+})
+test_that("`fm_assert_num()` errors when expected", {
   # Vector, missing, and infinite numerics fail
   expect_error(fm_assert_num(c(0, 1)))
   expect_error(fm_assert_nume(c(0L, 1L)))
@@ -133,7 +151,7 @@ test_that("`fm_assert_num()` works as expected", {
 })
 
 
-test_that("`fm_assert_vec_int()` works as expected", {
+test_that("`fm_assert_vec_int()` returns expected values", {
   # Non-missing integer-ish values pass
   int <- c(-.Machine$integer.max, 0L, .Machine$integer.max)
   expect_identical(fm_assert_vec_int(int), int)
@@ -141,6 +159,8 @@ test_that("`fm_assert_vec_int()` works as expected", {
   # Doesn't require non-scalar
   expect_identical(fm_assert_vec_int(int[[1L]]), int[[1L]])
   expect_identical(fm_assert_vec_int(0), 0L)
+})
+test_that("`fm_assert_vec_int()` errors when expected", {
   # Missing, infinite, or non-integerish values fail
   expect_error(fm_assert_vec_int(c(int, NA_integer_)))
   expect_error(fm_assert_vec_int(c(as.double(int), NA_real_)))
