@@ -166,3 +166,32 @@ fm_set_rownames <- function(x, names) {
   rownames(x) <- names
   x
 }
+
+
+#' Calculate Greatest Common Divisor of Positive Integers
+#'
+#' @param ... Numeric vectors containing integer set for GCD calculation
+#'
+#' @return A positive scalar `integer` containing the GCD of the inputs
+#'
+#' @keywords internal
+fm_gcd <- function(...) {
+  # Check and combine arguments
+  x <- abs(vctrs::vec_c(..., .ptype = integer()))
+  if (any(x <= 0L)) rlang::abort("All inputs must be integers >= 0")
+
+  # Special case - x is empty
+  if (length(x) == 0L) return(integer())
+
+  # Get GCD candidates
+  i <- seq_len(min(x))
+
+  # Eliminate sequentially
+  for (n in x) {
+    i <- i[n %% i == 0L]
+    if (length(i) == 1L) break
+  }
+
+  # Return largest remaining
+  max(i)
+}
