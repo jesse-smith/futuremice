@@ -23,7 +23,7 @@ fm_assert_num(x, arg_nm = rlang::caller_arg(x))
 
 fm_assert_vec_int(x, arg_nm = rlang::caller_arg(x))
 
-fm_assert_vec_num(x, arg_nm = rlang::caller_arg(x))
+fm_assert_vec_num(x, na_ok = FALSE, arg_nm = rlang::caller_arg(x))
 }
 \arguments{
 \item{x}{An object to check}
@@ -33,6 +33,8 @@ the caller environment automatically}
 
 \item{zero_ok}{Should zero be included in the counting numbers or raise an
 error?}
+
+\item{na_ok}{Should \code{NA}, \code{NaN}, or \code{Inf} values be considered valid?}
 }
 \value{
 If successful, \code{x}, invisibly; errors if unsuccessful. \code{x} may be

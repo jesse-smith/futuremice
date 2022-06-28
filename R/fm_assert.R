@@ -19,6 +19,7 @@
 #'   the caller environment automatically
 #' @param zero_ok Should zero be included in the counting numbers or raise an
 #'   error?
+#' @param na_ok Should `NA`, `NaN`, or `Inf` values be considered valid?
 #'
 #' @return If successful, `x`, invisibly; errors if unsuccessful. `x` may be
 #'   converted to strictly match the required data type.
@@ -116,9 +117,10 @@ fm_assert_vec_int <- function(x, arg_nm = rlang::caller_arg(x)) {
 #' @rdname fm_assert
 #'
 #' @keywords internal
-fm_assert_vec_num <- function(x, arg_nm = rlang::caller_arg(x)) {
+fm_assert_vec_num <- function(x, na_ok = FALSE, arg_nm = rlang::caller_arg(x)) {
+  fm_assert_bool(na_ok)
   is_num <- rlang::is_bare_numeric(x)
-  if (is_num && NROW(x) > 0L && !(anyNA(x) || any(is.infinite(x)))) {
+  if (is_num && NROW(x) > 0L && (na_ok || !(anyNA(x) || any(is.infinite(x))))) {
     invisible(as.double(x))
   } else {
     rlang::abort(paste0(
