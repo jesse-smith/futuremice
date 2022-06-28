@@ -11,7 +11,6 @@ future_mids(
   minit = min(5L, maxit),
   quiet = FALSE,
   chunk_size = 1L,
-  rhat_thresh = 1.05,
   rhat_max = 1.05,
   progressor = NULL,
   update_call = TRUE,
