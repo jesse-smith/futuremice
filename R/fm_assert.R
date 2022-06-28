@@ -11,6 +11,8 @@
 #'   converts its input to `double`
 #' `fm_assert_vec_int()` checks for non-missing, finite integer-ish values and
 #'   converts its input to `integer`
+#' `fm_assert_vec_num()` checks for non-missnig, finite values and converts its
+#'   input to `double`
 #'
 #' @param x An object to check
 #' @param arg_nm The name of the object to check; can usually be inferred from
@@ -107,6 +109,22 @@ fm_assert_vec_int <- function(x, arg_nm = rlang::caller_arg(x)) {
         "with `length(", arg_nm, ") > 0`"
       )
     )
+  }
+}
+
+
+#' @rdname fm_assert
+#'
+#' @keywords internal
+fm_assert_vec_num <- function(x, arg_nm = rlang::caller_arg(x)) {
+  is_num <- rlang::is_bare_numeric(x)
+  if (is_num && NROW(x) > 0L && !(anyNA(x) || any(is.infinite(x)))) {
+    invisible(as.double(x))
+  } else {
+    rlang::abort(paste0(
+      "`", arg_nm, "` must be a finite, non-missing numeric vector ",
+      "with `length(", arg_nm, ") > 0`"
+    ))
   }
 }
 

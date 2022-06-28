@@ -8,6 +8,7 @@
 \alias{fm_assert_seed}
 \alias{fm_assert_num}
 \alias{fm_assert_vec_int}
+\alias{fm_assert_vec_num}
 \title{Make Assertions on Data Types and Arguments}
 \usage{
 fm_assert_mids(x, arg_nm = rlang::caller_arg(x))
@@ -21,6 +22,8 @@ fm_assert_seed(x, arg_nm = rlang::caller_arg(x))
 fm_assert_num(x, arg_nm = rlang::caller_arg(x))
 
 fm_assert_vec_int(x, arg_nm = rlang::caller_arg(x))
+
+fm_assert_vec_num(x, arg_nm = rlang::caller_arg(x))
 }
 \arguments{
 \item{x}{An object to check}
@@ -46,5 +49,7 @@ or \code{NULL}, and converts non-\code{NULL} input to \code{integer}
 converts its input to \code{double}
 \code{fm_assert_vec_int()} checks for non-missing, finite integer-ish values and
 converts its input to \code{integer}
+\code{fm_assert_vec_num()} checks for non-missnig, finite values and converts its
+input to \code{double}
 }
 \keyword{internal}
