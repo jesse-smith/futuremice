@@ -25,7 +25,7 @@ statistics for the \code{it} most recent iterations
 mids <- mice::mice(mice::nhanes)
 
 # Get max R-hat for most recent 2 iterations
-rhat <- rhat_max(mids, it = 2L)
+rhat <- rhat_max(mids, n = 2L)
 rhat
 
 }

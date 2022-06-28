@@ -17,7 +17,7 @@
 #' mids <- mice::mice(mice::nhanes)
 #'
 #' # Get max R-hat for most recent 2 iterations
-#' rhat <- rhat_max(mids, it = 2L)
+#' rhat <- rhat_max(mids, n = 2L)
 #' rhat
 #'
 #' @export
@@ -42,7 +42,6 @@ rhat_max <- function(mids, n = 1L) {
 #'
 #' @param mids A `mids` object with imputations to check
 #' @param n The number of iterations to use when checking. Must be > 0.
-#' @param mean The upper bound for the mean/median of the R-hat values being checked
 #' @param max The upper bound for R-hat convergence
 fm_rhat_converged <- function(mids, n = 1L, max = 1.05) {
   fm_assert_mids(mids)

@@ -12,8 +12,6 @@ fm_rhat_converged(mids, n = 1L, max = 1.05)
 \item{n}{The number of iterations to use when checking. Must be > 0.}
 
 \item{max}{The upper bound for R-hat convergence}
-
-\item{mean}{The upper bound for the mean/median of the R-hat values being checked}
 }
 \description{
 Check Convergence of \code{mids} Object
