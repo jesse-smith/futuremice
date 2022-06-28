@@ -107,7 +107,7 @@ fm_furrr_opts <- function(parallel_params) {
 #' @keywords internal
 fm_exit_msg <- function(i, rhat, minit, rhat_msg) {
   i <- fm_assert_count(i)
-  rhat$rhat <- fm_assert_vec_num(rhat$rhat)
+  rhat$rhat <- fm_assert_vec_num(rhat$rhat, na_ok = TRUE)
   fm_assert_bool(rhat$converged)
   minit <- fm_assert_count(minit, zero_ok = FALSE)
   if (length(rhat$rhat) > i) {
