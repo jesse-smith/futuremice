@@ -134,24 +134,70 @@ test_that("`fm_furrr_opts()` errors when expected", {
 
 test_that("`fm_exit_msg()` produces expected output", {
   suppressMessages(expect_message(
-    fm_exit_msg(i = 10L, rhat_lt = rep(TRUE, 3L), rhat_it = 3L, "test")
+    fm_exit_msg(
+      i = 10L,
+      rhat = list(rhat = rep(1, 3L), converged = TRUE),
+      minit = 3L,
+      "test"
+    )
   ))
   suppressMessages(expect_warning(
-    fm_exit_msg(i = 10L, rhat_lt = rep(TRUE, 3L), rhat_it = 5L, "test")
+    fm_exit_msg(
+      i = 10L,
+      rhat = list(rhat = rep(1, 3L), converged = TRUE),
+      minit = 5L,
+      "test"
+    )
   ))
   suppressMessages(expect_warning(
-    fm_exit_msg(i = 10L, rhat_lt = c(FALSE, TRUE, TRUE), rhat_it = 3L, "test")
+    fm_exit_msg(
+      i = 10L,
+      rhat = list(rhat = c(1.5, 1, 1), converged = FALSE),
+      minit = 3L,
+      "test"
+    )
   ))
 })
 test_that("`fm_exit_msg()` errors when expected", {
   expect_error(
-    fm_exit_msg(i = -1L, rhat_lt = rep(TRUE, 3L), rhat_it = 3L, "test")
+    fm_exit_msg(
+      i = -1L,
+      rhat = list(rhat = rep(1, 3L), converged = TRUE),
+      minit = 3L,
+      "test"
+    )
   )
   expect_error(
-    fm_exit_msg(i = 10L, rhat_lt = rep(1L, 3L), rhat_it = 3L, "test")
+    fm_exit_msg(
+      i = 1L,
+      rhat = list(rhat = rep(1, 3L), converged = TRUE),
+      minit = 3L,
+      "test"
+    )
   )
   expect_error(
-    fm_exit_msg(i = 10L, rhat_lt = rep(TRUE, 3L), rhat_it = 0L, "test")
+    fm_exit_msg(
+      i = 10L,
+      rhat = list(rhat = rep(TRUE, 3L), converged = TRUE),
+      minit = 3L,
+      "test"
+    )
+  )
+  expect_error(
+    fm_exit_msg(
+      i = 10L,
+      rhat = list(rhat = rep(1, 3L), converged = NA),
+      minit = 3L,
+      "test"
+    )
+  )
+  expect_error(
+    fm_exit_msg(
+      i = 10L,
+      rhat = list(rhat = rep(1, 3L), converged = TRUE),
+      minit = 0L,
+      "test"
+    )
   )
 })
 

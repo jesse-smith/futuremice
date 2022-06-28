@@ -8,10 +8,12 @@ future_mids(
   obj,
   newdata = NULL,
   maxit = 100L,
+  minit = 5L,
   quiet = FALSE,
   chunk_size = 1L,
   rhat_thresh = 1.05,
-  rhat_it = 3L,
+  rhat_max = 1.1,
+  rhat_mean = 1.05,
   progressor = NULL,
   update_call = TRUE,
   ...
@@ -36,9 +38,6 @@ evaluated in a single call to \code{mice::mice()} if there is an integer \code{i
 such that \verb{1 < i <= chunk_size} and \code{m \%\% i == 0}.}
 
 \item{rhat_thresh}{The R-hat threshold used to assess convergence.
-Convergence is defined as \code{all(tail(rhat, rhat_it) < rhat_thresh)}.}
-
-\item{rhat_it}{The number of iterations used to assess convergence.
 Convergence is defined as \code{all(tail(rhat, rhat_it) < rhat_thresh)}.}
 
 \item{progressor}{An optional \code{\link[progressr]{progressor}}

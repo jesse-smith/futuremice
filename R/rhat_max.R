@@ -6,7 +6,7 @@
 #' statistics for the `it` most recent iterations
 #'
 #' @param mids A `mids` object as created by `mice::mice()`
-#' @param it The number of recent iterations for which R-hat should be
+#' @param n The number of recent iterations for which R-hat should be
 #'   calculated. If this is larger than the total number of iterations, it is
 #'   truncated.
 #'
@@ -21,12 +21,12 @@
 #' rhat
 #'
 #' @export
-rhat_max <- function(mids, it = 1L) {
-  it <- fm_assert_count(it)
+rhat_max <- function(mids, n = 1L) {
+  it <- fm_assert_count(n)
   if (it == 0L) return(numeric())
   params <- fm_prep_diagnostic_params(mids)
   maxit <- mids$iteration
-  minit <- pmax(1L, maxit - it + 1L)
+  minit <- pmax(1L, maxit - n + 1L)
   iters_list <- purrr::map(
     seq.int(minit, maxit, by = 1L),
     seq_len
@@ -36,6 +36,20 @@ rhat_max <- function(mids, it = 1L) {
 
 
 # Helpers ----------------------------------------------------------------------
+
+
+fm_rhat_converged <- function(mids, n = 1L, mean = 1.05, max = 1.1) {
+  rhat <- rhat_max(mids, n = n)
+  converged <- rlang::is_true(
+    length(rhat) >= n && !anyNA(rhat) && rhat[n] < mean && mean(rhat) < mean &&
+      max(rhat) < max
+  )
+  if (converged) {
+    slp_int <- confint(stats::lm(rhat ~ seq_along(rhat)))[2L,]
+    converged <- converged && slp_int[1L] <= 0 && slp_int[2L] >= 0
+  }
+  list(rhat = rhat, converged = converged)
+}
 
 
 #' Quick Max R-hat Calculation

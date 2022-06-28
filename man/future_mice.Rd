@@ -18,12 +18,13 @@ future_mice(
   post = NULL,
   defaultMethod = c("pmm", "logreg", "polyreg", "polr"),
   maxit = 100L,
+  minit = 5L,
   quiet = FALSE,
   seed = NA,
   data.init = NULL,
   chunk_size = 1L,
-  rhat_thresh = 1.05,
-  rhat_it = 3L,
+  rhat_max = 1.1,
+  rhat_mean = 1.05,
   progressor = NULL,
   ...
 )
@@ -154,12 +155,6 @@ usual \code{{future}} parameter in that multiple chains ("chunks") will be
 evaluated in a single call to \code{mice::mice()} if there is an integer \code{i}
 such that \verb{1 < i <= chunk_size} and \code{m \%\% i == 0}.}
 
-\item{rhat_thresh}{The R-hat threshold used to assess convergence.
-Convergence is defined as \code{all(tail(rhat, rhat_it) < rhat_thresh)}.}
-
-\item{rhat_it}{The number of iterations used to assess convergence.
-Convergence is defined as \code{all(tail(rhat, rhat_it) < rhat_thresh)}.}
-
 \item{progressor}{An optional \code{\link[progressr]{progressor}}
 function to signal progress updates. If supplied, you are responsible for
 ensuring that the number of steps in the \code{progressor} is consistent with
@@ -171,6 +166,12 @@ the number of iterations performed in \code{future_mice()}.}
     \item{\code{printFlag}}{If \code{TRUE}, \code{mice} will print history on console.
 Use \code{print=FALSE} for silent computation.}
   }}
+
+\item{rhat_thresh}{The R-hat threshold used to assess convergence.
+Convergence is defined as \code{all(tail(rhat, rhat_it) < rhat_thresh)}.}
+
+\item{rhat_it}{The number of iterations used to assess convergence.
+Convergence is defined as \code{all(tail(rhat, rhat_it) < rhat_thresh)}.}
 }
 \value{
 Returns an S3 object of class \code{\link[mice:mids-class]{mids}}

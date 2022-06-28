@@ -112,12 +112,13 @@ future_mice <- function(
   post = NULL,
   defaultMethod = c("pmm", "logreg", "polyreg", "polr"),
   maxit = 100L,
+  minit = 5L,
   quiet = FALSE,
   seed = NA,
   data.init = NULL,
   chunk_size = 1L,
-  rhat_thresh = 1.05,
-  rhat_it = 3L,
+  rhat_max = 1.1,
+  rhat_mean = 1.05,
   progressor = NULL,
   ...
 ) {
@@ -126,10 +127,12 @@ future_mice <- function(
 
   # Check arguments
   fm_assert_count(maxit)
+  fm_assert_count(minit)
+  if (minit > maxit) rlang::abort("`minit` must be <= `maxit`")
   fm_assert_bool(quiet)
   fm_assert_count(chunk_size)
-  fm_assert_num(rhat_thresh)
-  fm_assert_count(rhat_it)
+  fm_assert_num(rhat_max)
+  fm_assert_num(rhat_mean)
 
   # Get parallelization parameters
   pp <- fm_parallel_params(
@@ -166,17 +169,15 @@ future_mice <- function(
     seed = fm_mice_seed(pp$seed),
     last_seed_value = .Random.seed
   )
-  num_rhat_max <- rhat_max(mids)
-  rhat_lt <- if (is.na(num_rhat_max)) FALSE else num_rhat_max < rhat_thresh
-  rhat_msg <- paste("R-hat:", round(num_rhat_max, 3L))
-  rhat_msg <- paste(rhat_msg, "<", rhat_thresh)
+  rhat <- fm_rhat_converged(mids, n = minit, mean = rhat_mean, max = rhat_max)
+  rhat_msg <- paste("R-hat:", paste0(round(rhat$rhat, 3L), collapse = "/"))
 
   # Display progress
   progressor(message = rhat_msg, amount = 0)
 
   # Finish if criteria are met
-  if ((rhat_lt && rhat_it == 1L) || maxit == 1L) {
-    if (!quiet) fm_exit_msg(1L, rhat_lt, rhat_it, rhat_msg)
+  if (rhat$converged || maxit == 1L) {
+    if (!quiet) fm_exit_msg(1L, rhat, minit, rhat_msg)
     return(mids)
   }
 
@@ -189,10 +190,12 @@ future_mice <- function(
     mids,
     newdata = NULL,
     maxit = maxit - 1L,
+    minit = minit,
     quiet = quiet,
     chunk_size = chunk_size,
     rhat_thresh = rhat_thresh,
-    rhat_it = rhat_it,
+    rhat_max = rhat_max,
+    rhat_mean = rhat_mean,
     progressor = progressor,
     update_call = FALSE,
     !!!mice_args

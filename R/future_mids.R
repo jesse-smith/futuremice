@@ -45,10 +45,12 @@ future_mids <- function(
   obj,
   newdata = NULL,
   maxit = 100L,
+  minit = 5L,
   quiet = FALSE,
   chunk_size = 1L,
   rhat_thresh = 1.05,
-  rhat_it = 3L,
+  rhat_max = 1.1,
+  rhat_mean = 1.05,
   progressor = NULL,
   update_call = TRUE,
   ...
@@ -59,10 +61,12 @@ future_mids <- function(
   # Check arguments
   fm_assert_mids(obj)
   fm_assert_count(maxit)
+  fm_assert_count(minit)
+  if (minit > maxit) rlang::abort("`minit` must be <= `maxit`")
   fm_assert_bool(quiet)
   fm_assert_count(chunk_size)
-  fm_assert_num(rhat_thresh)
-  fm_assert_count(rhat_it)
+  fm_assert_num(rhat_max)
+  fm_assert_num(rhat_mean)
   fm_assert_bool(update_call)
 
 
@@ -111,20 +115,18 @@ future_mids <- function(
       seed = fm_mice_seed(pp$seed),
       last_seed_value = .Random.seed
     )
-    num_rhat_max <- rhat_max(mids, it = rhat_it)
-    rhat_lt <- ifelse(is.na(num_rhat_max), FALSE, num_rhat_max < rhat_thresh)
-    rhat_msg <- paste("R-hat:", paste0(round(num_rhat_max, 3L), collapse = "/"))
-    rhat_msg <- paste(rhat_msg, "<", rhat_thresh)
+    rhat <- fm_rhat_converged(mids, n = minit, mean = rhat_mean, max = rhat_max)
+    rhat_msg <- paste("R-hat:", paste0(round(rhat$rhat, 3L), collapse = "/"))
 
     # Update progress
     progressor(message = rhat_msg, amount = 0)
 
     # Break if criteria are met
-    if (all(rhat_lt) && NROW(rhat_lt) >= rhat_it) break
+    if (rhat$converged && NROW(rhat$rhat) >= minit) break
   }
 
   # Show ending message
-  if (!quiet) fm_exit_msg(i, rhat_lt, rhat_it, rhat_msg)
+  if (!quiet) fm_exit_msg(i, rhat, minit, rhat_msg)
 
   # Return
   mids

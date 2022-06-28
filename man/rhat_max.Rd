@@ -4,12 +4,12 @@
 \alias{rhat_max}
 \title{Quick Max R-hat Calculation}
 \usage{
-rhat_max(mids, it = 1L)
+rhat_max(mids, n = 1L)
 }
 \arguments{
 \item{mids}{A \code{mids} object as created by \code{mice::mice()}}
 
-\item{it}{The number of recent iterations for which R-hat should be
+\item{n}{The number of recent iterations for which R-hat should be
 calculated. If this is larger than the total number of iterations, it is
 truncated.}
 }

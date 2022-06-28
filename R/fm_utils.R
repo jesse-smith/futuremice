@@ -105,22 +105,21 @@ fm_furrr_opts <- function(parallel_params) {
 #' @return `NULL`, invisibly
 #'
 #' @keywords internal
-fm_exit_msg <- function(i, rhat_lt, rhat_it, rhat_msg) {
+fm_exit_msg <- function(i, rhat, minit, rhat_msg) {
   i <- fm_assert_count(i)
-  rhat_it <- fm_assert_count(rhat_it, zero_ok = FALSE)
-  if (!(is.logical(rhat_lt) && length(rhat_lt) > 0L && length(rhat_lt) <= i)) {
+  rhat$rhat <- fm_assert_vec_num(rhat$rhat)
+  fm_assert_bool(rhat$converged)
+  minit <- fm_assert_count(minit, zero_ok = FALSE)
+  if (length(rhat$rhat) > i) {
     rlang::abort(
-      "`rhat_lt` must be `logical` where `0 < length(rhat_lt) <= rhat_it`"
+      "`rhat$rhat` must be `numeric` where `0` < `length(rhat$rhat)` <= `minit`"
     )
   }
-  if (all(rhat_lt) && length(rhat_lt) >= rhat_it) {
-    iters <- paste(i, if (i == 1L) "iteration" else "iterations")
-    rlang::inform(paste0(
-      "Converged in ", iters, "\n",
-      rhat_msg
-    ))
+  iters <- paste(i, if (i == 1L) "iteration" else "iterations")
+  if (rhat$converged && length(rhat$rhat) >= minit) {
+    rlang::inform(paste0("Converged in ", iters, "\n", rhat_msg))
   } else {
-    rlang::warn(paste("Sampling did not converge in", i, "iterations"))
+    rlang::warn(paste("Sampling did not converge in", iters))
     rlang::inform(rhat_msg)
   }
   invisible(NULL)

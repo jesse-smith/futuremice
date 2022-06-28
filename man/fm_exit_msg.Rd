@@ -4,18 +4,18 @@
 \alias{fm_exit_msg}
 \title{Throw Messages/Warnings at End of \code{future_mice()} Execution}
 \usage{
-fm_exit_msg(i, rhat_lt, rhat_it, rhat_msg)
+fm_exit_msg(i, rhat, minit, rhat_msg)
 }
 \arguments{
 \item{i}{Integer(ish) representing iteration count}
+
+\item{rhat_msg}{Contents of \code{message} displaying R-hat values for last
+\code{rhat_it} iterations}
 
 \item{rhat_lt}{Logical vector of R-hat comparisons. \code{length(rhat_lt)} must be
 less than or equal to \code{rhat_it}.}
 
 \item{rhat_it}{Integer(ish) number of iterations used in R-hat comparison}
-
-\item{rhat_msg}{Contents of \code{message} displaying R-hat values for last
-\code{rhat_it} iterations}
 }
 \value{
 \code{NULL}, invisibly
