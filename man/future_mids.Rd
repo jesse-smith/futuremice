@@ -8,7 +8,7 @@ future_mids(
   obj,
   newdata = NULL,
   maxit = 100L,
-  minit = 5L,
+  minit = min(5L, maxit),
   quiet = FALSE,
   chunk_size = 1L,
   rhat_thresh = 1.05,
@@ -29,6 +29,10 @@ are generated according to the model in \code{obj}.}
 
 \item{maxit}{The number of additional Gibbs sampling iterations.}
 
+\item{minit}{The minimum number of iterations to run. This is also the number
+of iterations used to assess convergence. Convergence is defined as
+\code{all(tail(rhat, minit) < rhat_max)}.}
+
 \item{quiet}{Should convergence messages and warning be suppressed?}
 
 \item{chunk_size}{The average number of chains per future. Differs from the
@@ -36,8 +40,8 @@ usual \code{{future}} parameter in that multiple chains ("chunks") will be
 evaluated in a single call to \code{mice::mice()} if there is an integer \code{i}
 such that \verb{1 < i <= chunk_size} and \code{m \%\% i == 0}.}
 
-\item{rhat_thresh}{The R-hat threshold used to assess convergence.
-Convergence is defined as \code{all(tail(rhat, rhat_it) < rhat_thresh)}.}
+\item{rhat_max}{The R-hat threshold used to assess convergence.
+Convergence is defined as \code{all(tail(rhat, minit) < rhat_max)}.}
 
 \item{progressor}{An optional \code{\link[progressr]{progressor}}
 function to signal progress updates. If supplied, you are responsible for

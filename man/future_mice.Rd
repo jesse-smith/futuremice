@@ -18,7 +18,7 @@ future_mice(
   post = NULL,
   defaultMethod = c("pmm", "logreg", "polyreg", "polr"),
   maxit = 100L,
-  minit = 5L,
+  minit = min(5L, maxit),
   quiet = FALSE,
   seed = NA,
   data.init = NULL,
@@ -135,6 +135,10 @@ much larger than the \code{{mice}} default of \code{maxit = 5} but is large enou
 "just work" in many situations without potentially running for days on end
 if convergence is not achieved.}
 
+\item{minit}{The minimum number of iterations to run. This is also the number
+of iterations used to assess convergence. Convergence is defined as
+\code{all(tail(rhat, minit) < rhat_max)}.}
+
 \item{quiet}{Should convergence messages and warning be suppressed?}
 
 \item{seed}{Seed for random number generation; either a scalar \code{integer},
@@ -154,6 +158,9 @@ usual \code{{future}} parameter in that multiple chains ("chunks") will be
 evaluated in a single call to \code{mice::mice()} if there is an integer \code{i}
 such that \verb{1 < i <= chunk_size} and \code{m \%\% i == 0}.}
 
+\item{rhat_max}{The R-hat threshold used to assess convergence.
+Convergence is defined as \code{all(tail(rhat, minit) < rhat_max)}.}
+
 \item{progressor}{An optional \code{\link[progressr]{progressor}}
 function to signal progress updates. If supplied, you are responsible for
 ensuring that the number of steps in the \code{progressor} is consistent with
@@ -165,12 +172,6 @@ the number of iterations performed in \code{future_mice()}.}
     \item{\code{printFlag}}{If \code{TRUE}, \code{mice} will print history on console.
 Use \code{print=FALSE} for silent computation.}
   }}
-
-\item{rhat_thresh}{The R-hat threshold used to assess convergence.
-Convergence is defined as \code{all(tail(rhat, rhat_it) < rhat_thresh)}.}
-
-\item{rhat_it}{The number of iterations used to assess convergence.
-Convergence is defined as \code{all(tail(rhat, rhat_it) < rhat_thresh)}.}
 }
 \value{
 Returns an S3 object of class \code{\link[mice:mids-class]{mids}}
@@ -182,7 +183,7 @@ Equations (MICE) using the \code{{furrr}} package to create
 \code{\link[future]{future}}s for chains. Chains are also assessed for
 convergence using the R-hat (potential scale reduction factor) statistic
 computed by \code{\link[rstan:Rhat]{rstan::Rhat()}}; if the largest R-hat is
-less than \code{rhat_thresh} for \code{rhat_it} iterations, the function returns early
+less than \code{rhat_max} for \code{minit} iterations, the function returns early
 (without completing \code{maxit} iterations). This can save a significant amount
 of computation and manual convergence checking, and it often works well in
 practice. However, a "good" R-hat is neither a necessary nor sufficient

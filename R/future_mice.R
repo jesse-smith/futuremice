@@ -8,7 +8,7 @@
 #' \code{\link[future]{future}}s for chains. Chains are also assessed for
 #' convergence using the R-hat (potential scale reduction factor) statistic
 #' computed by \code{\link[rstan:Rhat]{rstan::Rhat()}}; if the largest R-hat is
-#' less than `rhat_thresh` for `rhat_it` iterations, the function returns early
+#' less than `rhat_max` for `minit` iterations, the function returns early
 #' (without completing `maxit` iterations). This can save a significant amount
 #' of computation and manual convergence checking, and it often works well in
 #' practice. However, a "good" R-hat is neither a necessary nor sufficient
@@ -53,15 +53,16 @@
 #'   much larger than the `{mice}` default of `maxit = 5` but is large enough to
 #'   "just work" in many situations without potentially running for days on end
 #'   if convergence is not achieved.
+#' @param minit The minimum number of iterations to run. This is also the number
+#'   of iterations used to assess convergence. Convergence is defined as
+#'   `all(tail(rhat, minit) < rhat_max)`.
 #' @param quiet Should convergence messages and warning be suppressed?
 #' @param chunk_size The average number of chains per future. Differs from the
 #'   usual `{future}` parameter in that multiple chains ("chunks") will be
 #'   evaluated in a single call to `mice::mice()` if there is an integer `i`
 #'   such that `1 < i <= chunk_size` and `m %% i == 0`.
-#' @param rhat_thresh The R-hat threshold used to assess convergence.
-#'   Convergence is defined as `all(tail(rhat, rhat_it) < rhat_thresh)`.
-#' @param rhat_it The number of iterations used to assess convergence.
-#'   Convergence is defined as `all(tail(rhat, rhat_it) < rhat_thresh)`.
+#' @param rhat_max The R-hat threshold used to assess convergence.
+#'   Convergence is defined as `all(tail(rhat, minit) < rhat_max)`.
 #' @param seed Seed for random number generation; either a scalar `integer`,
 #'   `NA`, or `NULL`. This seed is not used directly in `mice::mice()`; instead,
 #'   it is used to generate separate RNG streams for each `future` using the
@@ -112,7 +113,7 @@ future_mice <- function(
   post = NULL,
   defaultMethod = c("pmm", "logreg", "polyreg", "polr"),
   maxit = 100L,
-  minit = 5L,
+  minit = min(5L, maxit),
   quiet = FALSE,
   seed = NA,
   data.init = NULL,
@@ -174,7 +175,7 @@ future_mice <- function(
   progressor(message = rhat_msg, amount = 0)
 
   # Finish if criteria are met
-  if (rhat$converged || maxit == 1L) {
+  if (maxit == 1L) {
     if (!quiet) fm_exit_msg(1L, rhat, minit, rhat_msg)
     return(mids)
   }
@@ -188,10 +189,9 @@ future_mice <- function(
     mids,
     newdata = NULL,
     maxit = maxit - 1L,
-    minit = minit,
+    minit = minit - 1L,
     quiet = quiet,
     chunk_size = chunk_size,
-    rhat_thresh = rhat_thresh,
     rhat_max = rhat_max,
     progressor = progressor,
     update_call = FALSE,
