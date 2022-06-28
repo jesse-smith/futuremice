@@ -6,14 +6,13 @@
 #' `future_mice()` parallelizes chains in Multivariate Imputation using Chained
 #' Equations (MICE) using the `{furrr}` package to create
 #' \code{\link[future]{future}}s for chains. Chains are also assessed for
-#' convergence using the R-hat (potential scale reduction factor) statistic
-#' computed by \code{\link[rstan:Rhat]{rstan::Rhat()}}; if the largest R-hat is
-#' less than `rhat_max` for `minit` iterations, the function returns early
-#' (without completing `maxit` iterations). This can save a significant amount
-#' of computation and manual convergence checking, and it often works well in
-#' practice. However, a "good" R-hat is neither a necessary nor sufficient
-#' condition for MCMC convergence, nor is it a substitute for checking
-#' imputation quality once convergence is achieved.
+#' convergence using the R-hat (potential scale reduction factor) statistic; if
+#' the largest R-hat is less than `rhat_max` for `minit` iterations, the
+#' function returns early (without completing `maxit` iterations). This can save
+#' a significant amount of computation and manual convergence checking, and it
+#' often works well in practice. However, a "good" R-hat is neither a necessary
+#' nor sufficient condition for MCMC convergence, nor is it a substitute for
+#' checking imputation quality once convergence is achieved.
 #'
 #' MICE is a method for creating multiple imputations (replacement values) for
 #' multivariate missing data. The method is based on Fully Conditional
