@@ -51,13 +51,18 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_exit_msg</span><span class="op">(</span><span class="va">i</span>, <span class="va">rhat_lt</span>, <span class="va">rhat_it</span>, <span class="va">rhat_msg</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fm_exit_msg</span><span class="op">(</span><span class="va">i</span>, <span class="va">rhat</span>, <span class="va">minit</span>, <span class="va">rhat_msg</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>i</dt>
 <dd><p>Integer(ish) representing iteration count</p></dd>
+
+
+<dt>rhat_msg</dt>
+<dd><p>Contents of <code>message</code> displaying R-hat values for last
+<code>rhat_it</code> iterations</p></dd>
 
 
 <dt>rhat_lt</dt>
@@ -67,11 +72,6 @@ less than or equal to <code>rhat_it</code>.</p></dd>
 
 <dt>rhat_it</dt>
 <dd><p>Integer(ish) number of iterations used in R-hat comparison</p></dd>
-
-
-<dt>rhat_msg</dt>
-<dd><p>Contents of <code>message</code> displaying R-hat values for last
-<code>rhat_it</code> iterations</p></dd>
 
 </dl></div>
     <div class="section level2">

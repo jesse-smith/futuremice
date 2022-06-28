@@ -67,10 +67,10 @@ for details).</p>
 <span>  <span class="va">obj</span>,</span>
 <span>  newdata <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  maxit <span class="op">=</span> <span class="fl">100L</span>,</span>
+<span>  minit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="fl">5L</span>, <span class="va">maxit</span><span class="op">)</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  chunk_size <span class="op">=</span> <span class="fl">1L</span>,</span>
-<span>  rhat_thresh <span class="op">=</span> <span class="fl">1.05</span>,</span>
-<span>  rhat_it <span class="op">=</span> <span class="fl">3L</span>,</span>
+<span>  rhat_max <span class="op">=</span> <span class="fl">1.05</span>,</span>
 <span>  progressor <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  update_call <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -95,6 +95,12 @@ are generated according to the model in <code>obj</code>.</p></dd>
 <dd><p>The number of additional Gibbs sampling iterations.</p></dd>
 
 
+<dt>minit</dt>
+<dd><p>The minimum number of iterations to run. This is also the number
+of iterations used to assess convergence. Convergence is defined as
+<code>all(tail(rhat, minit) &lt; rhat_max)</code>.</p></dd>
+
+
 <dt>quiet</dt>
 <dd><p>Should convergence messages and warning be suppressed?</p></dd>
 
@@ -106,14 +112,9 @@ evaluated in a single call to <code><a href="https://amices.org/mice/reference/m
 such that <code>1 &lt; i &lt;= chunk_size</code> and <code>m %% i == 0</code>.</p></dd>
 
 
-<dt>rhat_thresh</dt>
+<dt>rhat_max</dt>
 <dd><p>The R-hat threshold used to assess convergence.
-Convergence is defined as <code>all(tail(rhat, rhat_it) &lt; rhat_thresh)</code>.</p></dd>
-
-
-<dt>rhat_it</dt>
-<dd><p>The number of iterations used to assess convergence.
-Convergence is defined as <code>all(tail(rhat, rhat_it) &lt; rhat_thresh)</code>.</p></dd>
+Convergence is defined as <code>all(tail(rhat, minit) &lt; rhat_max)</code>.</p></dd>
 
 
 <dt>progressor</dt>
@@ -161,7 +162,7 @@ functions.</p></dd>
 <span class="r-in"><span><span class="co"># Run for additional iteration</span></span></span>
 <span class="r-in"><span><span class="va">mids</span> <span class="op">&lt;-</span> <span class="fu">future_mids</span><span class="op">(</span><span class="va">mids</span>, maxit <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Sampling did not converge in 2 iterations</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> R-hat: NA/NA &lt; 1.05</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> R-hat: NA</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="co"># Run until convergence</span></span></span>

@@ -54,7 +54,7 @@ statistics for the <code>it</code> most recent iterations</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rhat_max</span><span class="op">(</span><span class="va">mids</span>, it <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rhat_max</span><span class="op">(</span><span class="va">mids</span>, n <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -63,7 +63,7 @@ statistics for the <code>it</code> most recent iterations</p>
 <dd><p>A <code>mids</code> object as created by <code><a href="https://amices.org/mice/reference/mice.html" class="external-link">mice::mice()</a></code></p></dd>
 
 
-<dt>it</dt>
+<dt>n</dt>
 <dd><p>The number of recent iterations for which R-hat should be
 calculated. If this is larger than the total number of iterations, it is
 truncated.</p></dd>
@@ -109,9 +109,9 @@ truncated.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   5   5  bmi  hyp  chl</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Get max R-hat for most recent 2 iterations</span></span></span>
-<span class="r-in"><span><span class="va">rhat</span> <span class="op">&lt;-</span> <span class="fu">rhat_max</span><span class="op">(</span><span class="va">mids</span>, it <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">rhat</span> <span class="op">&lt;-</span> <span class="fu">rhat_max</span><span class="op">(</span><span class="va">mids</span>, n <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">rhat</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.902514 1.902514</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.497963 1.902514</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
