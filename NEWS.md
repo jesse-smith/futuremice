@@ -1,5 +1,11 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# futuremice 0.0.0.9003
+
+* Use `minit` to control minimum iterations in `future_mice()`
+* Add comprehensive tests for small functions
+* Add minimal test for `future_mice()`
+
 # futuremice 0.0.0.9002
 
 * Change default `maxit` in `future_mice()` from `50` to `100`
