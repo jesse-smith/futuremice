@@ -1,4 +1,4 @@
-test_that("`future_mice()` works locally", {
+test_that("`future_mice()` works", {
   withr::local_seed(1L)
   future::plan("multisession", workers = pmin(2L, future::availableCores()))
   withr::defer(future::plan("sequential"))
@@ -13,5 +13,8 @@ test_that("`future_mice()` works locally", {
     )
     withr::defer(suppressMessages(remove.packages("futuremice")))
   }
-  expect_snapshot(future_mice(mice::nhanes, maxit = 5L, seed = 1L))
+  fmids <- suppressMessages(suppressWarnings(
+    future_mice(mice::nhanes, maxit = 5L, seed = 1L)
+  ))
+  expect_true(mice::is.mids(fmids))
 })
