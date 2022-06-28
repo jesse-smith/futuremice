@@ -49,8 +49,7 @@ future_mids <- function(
   quiet = FALSE,
   chunk_size = 1L,
   rhat_thresh = 1.05,
-  rhat_max = 1.1,
-  rhat_mean = 1.05,
+  rhat_max = 1.05,
   progressor = NULL,
   update_call = TRUE,
   ...
@@ -60,13 +59,12 @@ future_mids <- function(
 
   # Check arguments
   fm_assert_mids(obj)
-  fm_assert_count(maxit)
-  fm_assert_count(minit)
+  maxit <- fm_assert_count(maxit)
+  minit <- fm_assert_count(minit)
   if (minit > maxit) rlang::abort("`minit` must be <= `maxit`")
   fm_assert_bool(quiet)
-  fm_assert_count(chunk_size)
-  fm_assert_num(rhat_max)
-  fm_assert_num(rhat_mean)
+  chunk_size <- fm_assert_count(chunk_size)
+  rhat_max <- fm_assert_num(rhat_max)
   fm_assert_bool(update_call)
 
 
@@ -115,7 +113,7 @@ future_mids <- function(
       seed = fm_mice_seed(pp$seed),
       last_seed_value = .Random.seed
     )
-    rhat <- fm_rhat_converged(mids, n = minit, mean = rhat_mean, max = rhat_max)
+    rhat <- fm_rhat_converged(mids, n = minit, max = rhat_max)
     rhat_msg <- paste("R-hat:", paste0(round(rhat$rhat, 3L), collapse = "/"))
 
     # Update progress

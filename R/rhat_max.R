@@ -38,16 +38,20 @@ rhat_max <- function(mids, n = 1L) {
 # Helpers ----------------------------------------------------------------------
 
 
-fm_rhat_converged <- function(mids, n = 1L, mean = 1.05, max = 1.1) {
+#' Check Convergence of `mids` Object
+#'
+#' @param mids A `mids` object with imputations to check
+#' @param n The number of iterations to use when checking. Must be > 0.
+#' @param mean The upper bound for the mean/median of the R-hat values being checked
+#' @param max The upper bound for R-hat convergence
+fm_rhat_converged <- function(mids, n = 1L, max = 1.05) {
+  fm_assert_mids(mids)
+  n <- fm_assert_count(n, zero_ok = FALSE)
+  max <- fm_assert_num(max)
   rhat <- rhat_max(mids, n = n)
   converged <- rlang::is_true(
-    length(rhat) >= n && !anyNA(rhat) && rhat[n] < mean && mean(rhat) < mean &&
-      max(rhat) < max
+    length(rhat) >= n && !anyNA(rhat) && all(rhat < max)
   )
-  if (converged) {
-    slp_int <- confint(stats::lm(rhat ~ seq_along(rhat)))[2L,]
-    converged <- converged && slp_int[1L] <= 0 && slp_int[2L] >= 0
-  }
   list(rhat = rhat, converged = converged)
 }
 
