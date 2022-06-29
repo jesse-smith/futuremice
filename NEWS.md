@@ -1,5 +1,11 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# futuremice 0.0.0.9004
+
+* Fix progress bar not displaying
+* Fix issues with lazy argument evaluation during parallelization
+
+
 # futuremice 0.0.0.9003
 
 * Use `minit` to control minimum iterations in `future_mice()`
