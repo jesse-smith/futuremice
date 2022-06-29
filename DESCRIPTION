@@ -10,6 +10,8 @@ License: MIT + file LICENSE
 URL: https://github.com/jesse-smith/futuremice,
     https://jesse-smith.github.io/futuremice/
 BugReports: https://github.com/jesse-smith/futuremice/issues
+Depends: 
+    R (>= 3.5.0)
 Imports: 
     furrr,
     mice,
@@ -17,6 +19,7 @@ Imports:
     purrr,
     rlang,
     rngtools,
+    stats,
     vctrs,
     withr
 Suggests: 
