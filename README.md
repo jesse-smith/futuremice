@@ -10,7 +10,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 [![CRAN
 status](https://www.r-pkg.org/badges/version/futuremice)](https://CRAN.R-project.org/package=futuremice)
 [![Codecov test
-coverage](https://codecov.io/gh/jesse-smith/futuremice/branch/master/graph/badge.svg)](https://app.codecov.io/gh/jesse-smith/futuremice?branch=master)
+coverage](https://codecov.io/gh/jesse-smith/futuremice/branch/main/graph/badge.svg?token=tsXed2ET40)](https://codecov.io/gh/jesse-smith/futuremice)
 [![R-CMD-check](https://github.com/jesse-smith/futuremice/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jesse-smith/futuremice/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
@@ -40,6 +40,9 @@ parallel.
 # Load {futuremice}
 library(futuremice)
 
+# Use a local seed
+withr::local_seed(1L)
+
 # Evaluate futures in parallel - max of two workers to avoid hogging resources
 future::plan("multisession", workers = pmin(2L, future::availableCores()))
 
@@ -65,14 +68,14 @@ Now, let’s impute our missing data:
 # Impute the missing values using defaults
 # Use `progressr::with_progress()` to show the progress bar
 mids <- progressr::with_progress(future_mice(mice::nhanes))
-#> Converged in 63 iterations
-#> R-hat: 1.042/1.048/1.044 < 1.05
+#> Converged in 58 iterations
+#> R-hat: 1.036/1.022/1.021/1.033
 
 # Or start with `mice::mice()` and finish with `future_mids()`
 mids2 <- mice::mice(mice::nhanes, maxit = 1L, printFlag = FALSE)
 mids2 <- progressr::with_progress(future_mids(mids2, maxit = 100L))
-#> Converged in 44 iterations
-#> R-hat: 1.043/1.029/1.041 < 1.05
+#> Converged in 68 iterations
+#> R-hat: 1.035/1.021/1.025/1.017/1.023
 
 # View the resulting `mids` (*m*ultiply *i*mputed *d*ata *s*et) object
 mids
@@ -91,15 +94,15 @@ mids
 # List the actual imputations for BMI
 mids$imp$bmi
 #>       1    2    3    4    5
-#> 1  33.2 33.2 33.2 33.2 33.2
-#> 3  27.2 27.2 27.2 27.2 27.2
-#> 4  22.5 22.5 22.5 22.5 22.5
-#> 6  27.5 27.5 27.5 27.5 27.5
-#> 10 27.4 27.4 27.4 27.4 27.4
-#> 11 29.6 29.6 29.6 29.6 29.6
-#> 12 22.5 22.5 22.5 22.5 22.5
-#> 16 27.2 27.2 27.2 27.2 27.2
-#> 21 35.3 35.3 35.3 35.3 35.3
+#> 1  30.1 30.1 30.1 30.1 30.1
+#> 3  30.1 30.1 30.1 30.1 30.1
+#> 4  28.7 28.7 28.7 28.7 28.7
+#> 6  21.7 21.7 21.7 21.7 21.7
+#> 10 20.4 20.4 20.4 20.4 20.4
+#> 11 27.2 27.2 27.2 27.2 27.2
+#> 12 27.4 27.4 27.4 27.4 27.4
+#> 16 30.1 30.1 30.1 30.1 30.1
+#> 21 27.2 27.2 27.2 27.2 27.2
 ```
 
 Note that `future_mice()` will often run longer than `mice::mice()`’s
@@ -127,10 +130,10 @@ fit <- with(mids, lm(chl ~ age + bmi))
 
 # Pool and summarize the results
 summary(mice::pool(fit))
-#>          term  estimate std.error  statistic       df      p.value
-#> 1 (Intercept)  4.210554 50.318871 0.08367742 20.23797 0.9341350824
-#> 2         age 31.876011  7.851262 4.05998564 20.23797 0.0005992299
-#> 3         bmi  4.975187  1.550839 3.20806096 20.23797 0.0043667973
+#>          term   estimate std.error  statistic       df     p.value
+#> 1 (Intercept) -21.865304 56.857847 -0.3845609 20.23797 0.704574068
+#> 2         age  27.399468  8.579227  3.1936989 20.23797 0.004512915
+#> 3         bmi   6.237545  1.812132  3.4421031 20.23797 0.002544689
 ```
 
 The complete-data model is fit to each imputed data set, and the results

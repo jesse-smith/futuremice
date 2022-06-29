@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN status](https://www.r-pkg.org/badges/version/futuremice)](https://CRAN.R-project.org/package=futuremice)
-[![Codecov test coverage](https://codecov.io/gh/jesse-smith/futuremice/branch/master/graph/badge.svg)](https://app.codecov.io/gh/jesse-smith/futuremice?branch=master)
+[![Codecov test coverage](https://codecov.io/gh/jesse-smith/futuremice/branch/main/graph/badge.svg?token=tsXed2ET40)](https://codecov.io/gh/jesse-smith/futuremice)
 [![R-CMD-check](https://github.com/jesse-smith/futuremice/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jesse-smith/futuremice/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
@@ -46,6 +46,9 @@ Let's run the example from the `{mice}` package documentation, but in parallel.
 ```{r example-init}
 # Load {futuremice}
 library(futuremice)
+
+# Use a local seed
+withr::local_seed(1L)
 
 # Evaluate futures in parallel - max of two workers to avoid hogging resources
 future::plan("multisession", workers = pmin(2L, future::availableCores()))
