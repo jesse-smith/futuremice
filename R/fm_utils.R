@@ -61,7 +61,10 @@ fm_progressor <- function(parallel_params, progressor = NULL) {
   } else {
     fm_assert_count(parallel_params$n_calls)
     fm_assert_count(parallel_params$maxit)
-    progressr::progressor(parallel_params$n_calls * parallel_params$maxit)
+    progressr::progressor(
+      parallel_params$n_calls * parallel_params$maxit,
+      envir = rlang::env_parent()
+    )
   }
 }
 
