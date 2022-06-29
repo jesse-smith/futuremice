@@ -15,6 +15,21 @@ test_that("`fm_assert_mids()` checks inheritance only", {
 })
 
 
+test_that("`fm_assert_progressor()` returns expected value", {
+  pp <- fm_parallel_params(m = 1L, chunk_size = 1L, maxit = 1L, seed = 1L)
+  p <- progressr::with_progress(progressr::progressor(pp$n_calls * pp$maxit))
+  expect_identical(fm_assert_progressor(p), p)
+  expect_identical(fm_assert_progressor(NULL), NULL)
+})
+test_that("`fm_progressor()` errors when expected", {
+  pp <- fm_parallel_params(m = 1L, chunk_size = 1L, maxit = 1L, seed = 1L)
+  p <- progressr::with_progress(progressr::progressor(pp$n_calls * pp$maxit))
+  expect_error(fm_assert_progressor())
+  expect_error(fm_assert_progressor(NA))
+  expect_error(fm_assert_progressor(pp))
+})
+
+
 test_that("`fm_assert_bool()` returns expected values", {
   # Scalar, non-missing logicals pass
   expect_identical(fm_assert_bool(TRUE), TRUE)

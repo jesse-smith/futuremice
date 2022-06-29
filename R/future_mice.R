@@ -131,6 +131,7 @@ future_mice <- function(
   fm_assert_bool(quiet)
   chunk_size <- fm_assert_count(chunk_size)
   rhat_max <- fm_assert_num(rhat_max)
+  fm_assert_progressor(progressor)
 
   # Get parallelization parameters
   pp <- fm_parallel_params(
@@ -144,7 +145,9 @@ future_mice <- function(
   call <- rlang::caller_call(n = 0L)
 
   # Initialize progress bar
-  progressor <- fm_progressor(pp, progressor = progressor)
+  if (is.null(progressor)) {
+    progressor <- progressr::progressor(pp$n_calls * pp$maxit)
+  }
 
   # Set furrr options - RNG seeds and chunk size
   f_opts <- fm_furrr_opts(pp)

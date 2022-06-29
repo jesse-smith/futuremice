@@ -19,7 +19,7 @@ test_that("`future_mice()` works", {
     seed = 1L
   )
   fmids <- suppressMessages(suppressWarnings(
-    future_mice(p_list$data, maxit = p_list$maxit, seed = p_list$seed)
+    futuremice::future_mice(p_list$data, maxit = p_list$maxit, seed = p_list$seed)
   ))
   expect_true(mice::is.mids(fmids))
 })

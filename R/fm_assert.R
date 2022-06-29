@@ -2,6 +2,7 @@
 #'
 #' @description
 #' `fm_assert_mids()` checks for a `mids` object
+#' `fm_assert_progressor()` checks for a `progressor` function or `NULL`
 #' `fm_assert_bool()` checks for a non-missing, scalar `logical`
 #' `fm_assert_count()` checks for a non-missing, finite, scalar integer-ish
 #'   value >= 0 and converts its input to `integer`
@@ -38,6 +39,21 @@ fm_assert_mids <- function(x, arg_nm = rlang::caller_arg(x)) {
     invisible(x)
   } else {
     rlang::abort(paste0("`", arg_nm, "` must be a `mids` object"))
+  }
+}
+
+
+#' @rdname fm_assert
+#'
+#' @keywords internal
+fm_assert_progressor <- function(x, arg_nm = rlang::caller_arg(x)) {
+  if (is.null(x) || inherits(x, "progressor")) {
+    invisible(x)
+  } else {
+    rlang::abort(paste0(
+      "`", arg_nm, "`",
+      " must be `NULL` or a `progressor` function from {progressr}"
+    ))
   }
 }
 

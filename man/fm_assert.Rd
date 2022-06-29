@@ -3,6 +3,7 @@
 \name{fm_assert}
 \alias{fm_assert}
 \alias{fm_assert_mids}
+\alias{fm_assert_progressor}
 \alias{fm_assert_bool}
 \alias{fm_assert_count}
 \alias{fm_assert_seed}
@@ -12,6 +13,8 @@
 \title{Make Assertions on Data Types and Arguments}
 \usage{
 fm_assert_mids(x, arg_nm = rlang::caller_arg(x))
+
+fm_assert_progressor(x, arg_nm = rlang::caller_arg(x))
 
 fm_assert_bool(x, arg_nm = rlang::caller_arg(x))
 
@@ -42,6 +45,7 @@ converted to strictly match the required data type.
 }
 \description{
 \code{fm_assert_mids()} checks for a \code{mids} object
+\code{fm_assert_progressor()} checks for a \code{progressor} function or \code{NULL}
 \code{fm_assert_bool()} checks for a non-missing, scalar \code{logical}
 \code{fm_assert_count()} checks for a non-missing, finite, scalar integer-ish
 value >= 0 and converts its input to \code{integer}

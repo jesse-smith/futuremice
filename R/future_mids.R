@@ -65,6 +65,7 @@ future_mids <- function(
   chunk_size <- fm_assert_count(chunk_size)
   rhat_max <- fm_assert_num(rhat_max)
   fm_assert_bool(update_call)
+  fm_assert_progressor(progressor)
 
 
   # Calculate parallelization parameters
@@ -85,7 +86,10 @@ future_mids <- function(
   it <- obj$iteration
 
   # Initialize progress bar
-  progressor <- fm_progressor(pp, progressor = progressor)
+  # Initialize progress bar
+  if (is.null(progressor)) {
+    progressor <- progressr::progressor(pp$n_calls * pp$maxit)
+  }
 
   # Split `mids` object into list
   mids_list <- isplit(obj, chunk_size = chunk_size)

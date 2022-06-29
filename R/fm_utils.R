@@ -41,33 +41,6 @@ fm_parallel_params <- function(m, chunk_size, maxit, seed) {
   )
 }
 
-#' Initialize `progressor` for `future_mice()` and `future_mids()`
-#'
-#' @param parallel_params List of parameters for parallelization as calculated
-#'   by `fm_parallel_params()`
-#' @param progressor An optional existing `progressor` object, or `NULL`
-#'
-#' @return A `progressor` object; if `progressor != NULL`, this is the unchanged
-#'   input
-#'
-#' @keywords internal
-fm_progressor <- function(parallel_params, progressor = NULL) {
-  if (inherits(progressor, "progressor")) {
-    progressor
-  } else if (!is.null(progressor)) {
-    rlang::abort(
-      "`progressor` must be `NULL` or a `progressor` function from {progressr}"
-    )
-  } else {
-    fm_assert_count(parallel_params$n_calls)
-    fm_assert_count(parallel_params$maxit)
-    progressr::progressor(
-      parallel_params$n_calls * parallel_params$maxit,
-      envir = rlang::env_parent()
-    )
-  }
-}
-
 
 #' Create `furrr_options()` List from Parallelization Parameters
 #'
