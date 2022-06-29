@@ -13,8 +13,13 @@ test_that("`future_mice()` works", {
     )
     withr::defer(suppressMessages(remove.packages("futuremice")))
   }
+  p_list <- list(
+    data = mice::nhanes,
+    maxit = 5L,
+    seed = 1L
+  )
   fmids <- suppressMessages(suppressWarnings(
-    future_mice(mice::nhanes, maxit = 5L, seed = 1L)
+    future_mice(p_list$data, maxit = p_list$maxit, seed = p_list$seed)
   ))
   expect_true(mice::is.mids(fmids))
 })

@@ -284,11 +284,12 @@ fm_caller_args <- function(
 ) {
   call <- rlang::caller_call(n = n)
   fn <- rlang::call_fn(call)
-  rlang::call_args(rlang::call_match(
+  args <- rlang::call_args(rlang::call_match(
     call = call, fn = fn,
     ...,
     defaults = defaults,
     dots_env = dots_env,
     dots_expand = dots_expand
   ))
+  purrr::map(args, rlang::eval_tidy, env = rlang::caller_env(n = n + 1L))
 }
