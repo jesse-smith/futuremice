@@ -14,6 +14,8 @@ coverage](https://codecov.io/gh/jesse-smith/futuremice/branch/main/graph/badge.s
 [![R-CMD-check](https://github.com/jesse-smith/futuremice/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jesse-smith/futuremice/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
+NOTE: This package is an unfinished experiment in extending `{mice}` and is no longer updated or maintained. `{mice}` now supports using `{future}` for parallelization, so you're probably better off using that.
+
 `{futuremice}` parallelizes the main functionality of the `{mice}`
 package using `{future}` and `{furrr}`. This enables the use of a
 progress bar for updates, as well as an early stopping method to save
